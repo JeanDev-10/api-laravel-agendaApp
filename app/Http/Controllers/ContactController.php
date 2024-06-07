@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Http\Responses\ApiResponses;
 use Illuminate\Validation\Rule;
 use App\Models\Contact;
 use Exception;
@@ -52,11 +53,8 @@ class ContactController extends Controller
             ], 201);
 
         } catch (ValidationException $e) {
-            return response()->json([
-                'success' => false, 
-                'message' => $e->errors(),
-                'statusCode' => 409
-            ], 409);
+            $errors = $e->validator->errors()->toArray();
+            return ApiResponses::error("Error de validación", 422, $errors);
         }
     }
 
@@ -106,11 +104,8 @@ class ContactController extends Controller
                 'statusCode' => 404
             ], 404);
         } catch (ValidationException $e){
-            return response()->json([
-                'success' => false, 
-                'message' => $e->errors(),
-                'statusCode' => 409
-            ], 409);
+            $errors = $e->validator->errors()->toArray();
+            return ApiResponses::error("Error de validación", 422, $errors);
         }
     }
 
