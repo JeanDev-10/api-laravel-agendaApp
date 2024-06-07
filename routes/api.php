@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ContactController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +18,8 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/auth/register', 'register');
     Route::post('/auth/login', 'login');
 });
+
+Route::Apiresource('contacts', ContactController::class);
 
 Route::group(['middleware' => ["auth:sanctum"]], function () {
     //auth metodos
