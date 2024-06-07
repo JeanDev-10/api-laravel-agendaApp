@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Contact extends Model
 {
     use HasFactory;
-    protected $timestamps=false;
+    public $timestamps=false;
     public $table="contacts";
     protected $fillable = [
         'name',
