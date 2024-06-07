@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\Rule;
 use App\Models\Contact;
 use Exception;
@@ -72,7 +73,45 @@ class ContactController extends Controller
      */
     public function update(Request $request,  $id)
     {
-        //
+        try {
+
+
+            $contacto = Contact::where(['id' => $id])->firstOrFail();
+
+            $request->validate([
+                'name' => 'required|string|min:3|max:255',
+                'phone' => [
+                    'required',
+                    'string',
+                    'min:10',
+                    'max:10',
+                    Rule::unique('contacts')->ignore($contacto)
+                ],
+                'nickname' => 'nullable|string|min:3|max:255',
+                'user_id' => 'required|exists:users,id'
+            ]);
+
+            $contacto->update($request->all());
+
+            return response()->json([
+                'success' => true,
+                'msj' => 'Se actualizó correctamente el contacto',
+                'statusCode' => 202
+            ], 202);
+
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false, 
+                'message' => 'Contacto no encontrado',
+                'statusCode' => 404
+            ], 404);
+        } catch (ValidationException $e){
+            return response()->json([
+                'success' => false, 
+                'message' => $e->errors(),
+                'statusCode' => 409
+            ], 409);
+        }
     }
 
     /**
