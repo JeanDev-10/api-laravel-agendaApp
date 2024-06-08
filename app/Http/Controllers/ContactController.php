@@ -85,7 +85,29 @@ class ContactController extends Controller
      */
     public function show( $id)
     {
-        //
+        try {
+            $contact = Contact::where(['id' => $id])->firstOrFail();
+
+            return response()->json([
+                'success' => true,
+                'msj' => 'Mostrando contacto',
+                'data' => $contact,
+                'statusCode' => 200
+            ], 200);
+
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false, 
+                'message' => 'Contacto no encontrado',
+                'statusCode' => 404
+            ], 404);
+        } catch (Exception $e){
+            return response()->json([
+                'success' => false, 
+                'message' => 'Error de base de datos',
+                'statusCode' => 501
+            ], 501);
+        }
     }
 
     /**
