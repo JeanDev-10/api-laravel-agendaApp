@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Interfaces\Auth;
+namespace App\Interfaces\Auth;
 use Illuminate\Http\Request;
 
 interface AuthInterface{

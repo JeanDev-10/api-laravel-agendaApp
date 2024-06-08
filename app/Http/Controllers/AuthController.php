@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Repository\Auth\AuthRepository;
-use App\Http\Responses\ApiResponses;
-use App\Models\User;
+use App\Repository\Auth\AuthRepository;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use App\Http\Responses\ApiResponses;
 
 class AuthController extends Controller
 {
+
+    private AuthRepository $authRepository;
     public function __construct(
-        protected AuthRepository $authRepository,
+        AuthRepository $authRepository,
     ) {
+        $this->authRepository=$authRepository;
     }
     public function register(Request $request)
     {
