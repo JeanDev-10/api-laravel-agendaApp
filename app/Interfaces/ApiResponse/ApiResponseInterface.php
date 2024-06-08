@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Interfaces\ApiResponse;
+namespace App\Interfaces\ApiResponse;
 
 interface ApiResponseInterface{
     public static function succes($message,$statusCode,$data);
