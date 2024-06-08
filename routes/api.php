@@ -19,7 +19,7 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/auth/login', 'login');
 });
 
-Route::Apiresource('contacts', ContactController::class);
+
 
 Route::group(['middleware' => ["auth:sanctum"]], function () {
     //auth metodos
@@ -27,6 +27,10 @@ Route::group(['middleware' => ["auth:sanctum"]], function () {
         Route::get('auth/profile', 'userProfile');
         Route::post('auth/logout', 'logout');
     });
+
+    // Contacts metodos
+
+    Route::Apiresource('contacts', ContactController::class);
 });
 
 //auth metodos

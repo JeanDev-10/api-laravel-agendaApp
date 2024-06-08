@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Responses\ApiResponses;
 use Illuminate\Validation\Rule;
 use App\Models\Contact;
+use App\Http\Interfaces\Auth\AuthInterface;
+
 use Exception;
 
 class ContactController extends Controller
@@ -17,7 +20,26 @@ class ContactController extends Controller
      */
     public function index()
     {
-        //
+
+        try {
+            $user = Auth::guard('sanctum')->user();
+
+            $contacts = Contact::where(['user_id' => $user->id])->get();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Lista de contactos de un usuario.',
+                'data' => $contacts,
+                'statusCode' => 200
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error de base de datos',
+                'statusCode' => 501
+            ], 501);
+        }
+
     }
 
     /**
