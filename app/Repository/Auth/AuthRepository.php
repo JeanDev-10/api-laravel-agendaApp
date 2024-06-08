@@ -17,10 +17,10 @@ class AuthRepository implements AuthInterface{
                 //si está todo ok
                 return ApiResponses::succes("Usuario logeado exitosamente", 200,$token);
             }else{
-                return ApiResponses::error("Credenciales incorrectas",404);
+                return ApiResponses::error("Credenciales incorrectas",404,["message"=>"Credenciales incorrectas"]);
             }
         }else{
-            return ApiResponses::error("Usuario no registrado",404);
+            return ApiResponses::error("Usuario no registrado",404,["message"=>"Usuario no registrado"]);
 
         }
     }
