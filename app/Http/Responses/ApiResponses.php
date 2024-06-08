@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Responses;
-use App\Http\Interfaces\ApiResponse\ApiResponseInterface;
+use App\Interfaces\ApiResponse\ApiResponseInterface;
 class ApiResponses implements ApiResponseInterface{
     public static function succes($message="success",$statusCode=200,$data=[]){
         return response()->json([

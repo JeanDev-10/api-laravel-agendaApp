@@ -1,7 +1,7 @@
 <?php
-namespace App\Http\Repository\Auth;
-use App\Http\Interfaces\Auth\AuthInterface;
+namespace App\Repository\Auth;
 use App\Http\Responses\ApiResponses;
+use App\Interfaces\Auth\AuthInterface;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
