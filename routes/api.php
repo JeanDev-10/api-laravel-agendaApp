@@ -32,6 +32,13 @@ Route::group(['middleware' => ["auth:sanctum"]], function () {
         Route::post('auth/changePassword', 'changePassword');
         Route::put('auth/editProfile', 'editProfile');
     });
+
+    Route::controller(ContactController::class)->group(function () {
+        Route::get('contact/index', 'index');
+        Route::post('contact/create', 'store');
+        Route::get('contact/show/{id}', 'show');
+        Route::put('contact/update/{id}', 'update');
+    });
 });
 
 //auth metodos
