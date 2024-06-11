@@ -18,4 +18,16 @@ class UserRepository implements UserInterface{
                 return ApiResponses::error("Contraseña actual incorrecta",401,["message"=>"Contraseña incorrecta"]);
             }
     }
+    public function editProfile(Request $request){
+        $id = Auth::guard('sanctum')->user()->id;
+        $user = User::where("id", "=", $id)->first();
+        if ($request->firstName === $user->firstname && $request->lastName === $user->lastname) {
+            return ApiResponses::succes("No hay cambios, perfil no fue actualizado", 200,["message"=>"No hay cambios, perfil no fue actualizado"]);
+        }
+        $user->update([
+            "firstname"=>$request->firstName,
+            "lastname"=>$request->lastName,
+        ]);
+        return ApiResponses::succes("Perfil actualizado exitosamente", 200);
+    }
 }

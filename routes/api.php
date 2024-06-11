@@ -27,6 +27,7 @@ Route::group(['middleware' => ["auth:sanctum"]], function () {
     });
     Route::controller(UserController::class)->group(function () {
         Route::post('auth/changePassword', 'changePassword');
+        Route::put('auth/editProfile', 'editProfile');
     });
 });
 
