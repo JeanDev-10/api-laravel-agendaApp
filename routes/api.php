@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,6 +24,9 @@ Route::group(['middleware' => ["auth:sanctum"]], function () {
     Route::controller(AuthController::class)->group(function () {
         Route::get('auth/profile', 'userProfile');
         Route::post('auth/logout', 'logout');
+    });
+    Route::controller(UserController::class)->group(function () {
+        Route::post('auth/changePassword', 'changePassword');
     });
 });
 
