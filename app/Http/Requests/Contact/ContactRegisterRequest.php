@@ -37,8 +37,7 @@ class ContactRegisterRequest extends FormRequest
                     return $query->where('user_id', $this->user_id);
                 }),
             ],
-            'nickname' => 'nullable|string|min:3|max:255',
-            'user_id' => 'required|exists:users,id'
+            'nickname' => 'nullable|string|min:3|max:255'
         ];
     }
 

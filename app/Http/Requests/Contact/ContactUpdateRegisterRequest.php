@@ -37,8 +37,7 @@ class ContactUpdateRegisterRequest extends FormRequest
                 'max:10',
                 Rule::unique('contacts')->ignore($contactId),
             ],
-            'nickname' => 'nullable|string|min:3|max:255',
-            'user_id' => 'required|exists:users,id'
+            'nickname' => 'nullable|string|min:3|max:255'
         ];
     }
 

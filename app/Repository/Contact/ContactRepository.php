@@ -16,7 +16,16 @@ class ContactRepository implements ContactInterface{
     }
 
     public function store(Request $request){
-        Contact::create($request->all());
+
+        $userID = Auth::guard('sanctum')->user()->id;
+
+        Contact::create([
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'nickname' => $request->has('nickname') ? $request->nickname : null,
+            'user_id' => $userID
+        ]);
+
         return ApiResponses::succes('Se ha creado exitosamente el contacto', 201);
     }
 
@@ -27,7 +36,13 @@ class ContactRepository implements ContactInterface{
 
     public function update(Request $request, $id){
         $contacto = Contact::where(['id' => $id])->firstOrFail();
-        $contacto->update($request->all());
+        $userID = Auth::guard('sanctum')->user()->id;
+        $contacto->update([
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'nickname' => $request->has('nickname') ? $request->nickname : null,
+            'user_id' => $userID
+        ]);
         return ApiResponses::succes('Se actualizó correctamente el contacto', 202, $contacto);
     }
 
