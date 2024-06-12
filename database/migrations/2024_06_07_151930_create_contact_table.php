@@ -22,6 +22,7 @@ return new class extends Migration
             // Para que el usuario solo sea el celular unico solo para el usuario que lo creo
 
             $table->unique(['user_id', 'phone']);
+            $table->softDeletes();
         });
     }
 
