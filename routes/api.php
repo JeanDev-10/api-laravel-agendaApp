@@ -34,10 +34,10 @@ Route::group(['middleware' => ["auth:sanctum"]], function () {
     });
 
     Route::controller(ContactController::class)->group(function () {
-        Route::get('contact/index', 'index');
-        Route::post('contact/create', 'store');
-        Route::get('contact/show/{id}', 'show');
-        Route::put('contact/update/{id}', 'update');
+        Route::get('contact', 'index');
+        Route::post('contact', 'store');
+        Route::get('contact/{id}', 'show');
+        Route::put('contact/{id}', 'update');
     });
 });
 
