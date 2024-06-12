@@ -47,6 +47,8 @@ class ContactRepository implements ContactInterface{
     }
 
     public function delete($id){
-
+        $contact = Contact::where(['id' => $id])->firstOrFail();
+        $contact->delete();
+        return ApiResponses::succes('Se borró correctamente el contacto.', 200);
     }
 }

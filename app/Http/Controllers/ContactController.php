@@ -84,8 +84,15 @@ class ContactController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy( $id)
+    public function destroy($id)
     {
-        //
+        try {
+           return $this->contactRepository->delete($id);
+        } catch (ModelNotFoundException $e){
+            return ApiResponses::error('Contacto no encontrado', 404);
+        }
+        catch (Exception $e) {
+           return ApiResponses::error('Ha ocurrido un error', $e->getMessage(), 500);
+        }
     }
 }

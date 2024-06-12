@@ -38,6 +38,7 @@ Route::group(['middleware' => ["auth:sanctum"]], function () {
         Route::post('contact', 'store');
         Route::get('contact/{id}', 'show');
         Route::put('contact/{id}', 'update');
+        Route::delete('contact/{id}', 'destroy');
     });
 });
 
