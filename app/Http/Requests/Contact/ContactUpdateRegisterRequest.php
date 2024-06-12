@@ -26,8 +26,6 @@ class ContactUpdateRegisterRequest extends FormRequest
      */
     public function rules(): array
     {
-        $contactId = $this->route('id');
-
         return [
             'name' => 'required|string|min:3|max:255',
             'phone' => [
@@ -35,7 +33,7 @@ class ContactUpdateRegisterRequest extends FormRequest
                 'string',
                 'min:10',
                 'max:10',
-                Rule::unique('contacts')->ignore($contactId),
+                'exists:contacts,phone',
             ],
             'nickname' => 'nullable|string|min:3|max:255'
         ];

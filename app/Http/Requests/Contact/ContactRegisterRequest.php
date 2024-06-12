@@ -33,9 +33,7 @@ class ContactRegisterRequest extends FormRequest
                 'string',
                 'min:10',
                 'max:10',
-                Rule::unique('contacts')->where(function ($query) {
-                    return $query->where('user_id', $this->user_id);
-                }),
+                'exists:contacts,phone',
             ],
             'nickname' => 'nullable|string|min:3|max:255'
         ];

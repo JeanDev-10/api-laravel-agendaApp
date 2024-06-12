@@ -1,27 +1,32 @@
 <?php
 namespace App\Repository\Contact;
+
 use App\Interfaces\Contact\ContactInterface;
 use App\Http\Responses\ApiResponses;
 use App\Models\Contact;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 
 
-class ContactRepository implements ContactInterface{
+class ContactRepository implements ContactInterface
+{
 
-    public function index(){
+    public function index()
+    {
         $user = Auth::guard('sanctum')->user();
         $contacts = Contact::where(['user_id' => $user->id])->get();
-        foreach ($contacts as $contact) 
-        { 
-            $contact->encrypted_id = Crypt::encrypt($contact->id); 
+        foreach ($contacts as $contact) {
+            $contact->encrypted_id = Crypt::encrypt($contact->id);
         }
         return ApiResponses::succes('Lista de contactos de un usuario.', 200, $contacts);
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
 
         $userID = Auth::guard('sanctum')->user()->id;
 
@@ -35,15 +40,17 @@ class ContactRepository implements ContactInterface{
         return ApiResponses::succes('Se ha creado exitosamente el contacto', 201);
     }
 
-    public function show($idEncrypted){
-        
+    public function show($idEncrypted)
+    {
+
         $contact = Contact::where(['id' => Crypt::decrypt($idEncrypted)])->firstOrFail();
         return ApiResponses::succes('Mostrando Contacto', 200, $contact);
     }
 
-    public function update(Request $request, $idEncrypted){
-        $contacto = Contact::where(['id' => Crypt::decrypt($idEncrypted)])->firstOrFail();
+    public function update(Request $request, $idEncrypted)
+    {
         $userID = Auth::guard('sanctum')->user()->id;
+        $contacto = Contact::where(['id' => Crypt::decrypt($idEncrypted)])->firstOrFail();
         $contacto->update([
             'name' => $request->name,
             'phone' => $request->phone,
@@ -51,9 +58,11 @@ class ContactRepository implements ContactInterface{
             'user_id' => $userID
         ]);
         return ApiResponses::succes('Se actualizó correctamente el contacto', 202, $contacto);
+
     }
 
-    public function delete($idEncrypted){
+    public function delete($idEncrypted)
+    {
         $contact = Contact::where(['id' => Crypt::decrypt($idEncrypted)])->firstOrFail();
         $contact->delete();
         return ApiResponses::succes('Se borró correctamente el contacto.', 200);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -23,7 +24,7 @@ class ContactController extends Controller
      public function __construct(ContactRepository $contactRepository){
         $this->contactRepository = $contactRepository;
      }
-     
+
     public function index()
     {
 
@@ -45,7 +46,12 @@ class ContactController extends Controller
         } catch (ValidationException $e) {
             $errors = $e->validator->errors()->toArray();
             return ApiResponses::error("Error de validación", 422, $errors);
-        } catch (Exception $e) {
+        }
+         catch (QueryException  $e) {
+            return ApiResponses::error("No puedes crear otro contacto con el mismo número", 422, ["message"=>"No puedes crear otro contacto con el mismo número"]);
+        }
+
+        catch (Exception $e) {
             return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
         }
     }
@@ -76,7 +82,10 @@ class ContactController extends Controller
         } catch (ValidationException $e){
             $errors = $e->validator->errors()->toArray();
             return ApiResponses::error("Error de validación", 422, $errors);
-        } catch (Exception $e){
+        }  catch (QueryException  $e) {
+            return ApiResponses::error("No puedes crear otro contacto con el mismo número", 422, ["message"=>"Ya tienes un contacto con ese número"]);
+        }
+        catch (Exception $e){
             return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
         }
     }
