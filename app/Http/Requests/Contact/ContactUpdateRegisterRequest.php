@@ -33,7 +33,6 @@ class ContactUpdateRegisterRequest extends FormRequest
                 'string',
                 'min:10',
                 'max:10',
-                'exists:contacts,phone',
             ],
             'nickname' => 'nullable|string|min:3|max:255'
         ];

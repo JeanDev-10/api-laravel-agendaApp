@@ -22,7 +22,7 @@ class ContactRepository implements ContactInterface
         foreach ($contacts as $contact) {
             $contact->encrypted_id = Crypt::encrypt($contact->id);
         }
-        return ApiResponses::succes('Lista de contactos de un usuario.', 200, $contacts);
+        return $contacts;
     }
 
     public function store(Request $request)
@@ -37,14 +37,13 @@ class ContactRepository implements ContactInterface
             'user_id' => $userID
         ]);
 
-        return ApiResponses::succes('Se ha creado exitosamente el contacto', 201);
     }
 
     public function show($idEncrypted)
     {
 
         $contact = Contact::where(['id' => Crypt::decrypt($idEncrypted)])->firstOrFail();
-        return ApiResponses::succes('Mostrando Contacto', 200, $contact);
+        return $contact;
     }
 
     public function update(Request $request, $idEncrypted)
@@ -57,7 +56,6 @@ class ContactRepository implements ContactInterface
             'nickname' => $request->has('nickname') ? $request->nickname : null,
             'user_id' => $userID
         ]);
-        return ApiResponses::succes('Se actualizó correctamente el contacto', 202, $contacto);
 
     }
 
@@ -65,6 +63,5 @@ class ContactRepository implements ContactInterface
     {
         $contact = Contact::where(['id' => Crypt::decrypt($idEncrypted)])->firstOrFail();
         $contact->delete();
-        return ApiResponses::succes('Se borró correctamente el contacto.', 200);
     }
 }

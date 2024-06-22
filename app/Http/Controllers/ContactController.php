@@ -19,17 +19,20 @@ class ContactController extends Controller
      * Display a listing of the resource.
      */
 
-     private ContactRepository $contactRepository;
+    private ContactRepository $contactRepository;
 
-     public function __construct(ContactRepository $contactRepository){
+    public function __construct(ContactRepository $contactRepository)
+    {
         $this->contactRepository = $contactRepository;
-     }
+    }
 
     public function index()
     {
 
         try {
-            return $this->contactRepository->index();
+            $contacts = $this->contactRepository->index();
+            return ApiResponses::succes('Lista de contactos de un usuario.', 200, $contacts);
+
         } catch (Exception $e) {
             return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
         }
@@ -42,16 +45,14 @@ class ContactController extends Controller
     public function store(ContactRegisterRequest $request)
     {
         try {
-            return $this->contactRepository->store($request);
+            $this->contactRepository->store($request);
+            return ApiResponses::succes('Se ha creado exitosamente el contacto', 201);
         } catch (ValidationException $e) {
             $errors = $e->validator->errors()->toArray();
             return ApiResponses::error("Error de validación", 422, $errors);
-        }
-         catch (QueryException  $e) {
-            return ApiResponses::error("No puedes crear otro contacto con el mismo número", 422, ["message"=>"No puedes crear otro contacto con el mismo número"]);
-        }
-
-        catch (Exception $e) {
+        } catch (QueryException $e) {
+            return ApiResponses::error("No puedes crear otro contacto con el mismo número", 422, ["message" => "No puedes crear otro contacto con el mismo número"]);
+        } catch (Exception $e) {
             return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
         }
     }
@@ -62,10 +63,12 @@ class ContactController extends Controller
     public function show($id)
     {
         try {
-            return $this->contactRepository->show($id);
+            $contact = $this->contactRepository->show($id);
+            return ApiResponses::succes('Mostrando Contacto', 200, $contact);
+
         } catch (ModelNotFoundException $e) {
             return ApiResponses::error('Contacto no encontrado', 404);
-        } catch (Exception $e){
+        } catch (Exception $e) {
             return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
         }
     }
@@ -73,19 +76,20 @@ class ContactController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(ContactUpdateRegisterRequest $request,  $id)
+    public function update(ContactUpdateRegisterRequest $request, $id)
     {
         try {
-            return $this->contactRepository->update($request, $id);
+            $this->contactRepository->update($request, $id);
+            return ApiResponses::succes('Se actualizó correctamente el contacto', 202);
+
         } catch (ModelNotFoundException $e) {
             return ApiResponses::error('Contacto no encontrado', 404);
-        } catch (ValidationException $e){
+        } catch (ValidationException $e) {
             $errors = $e->validator->errors()->toArray();
             return ApiResponses::error("Error de validación", 422, $errors);
-        }  catch (QueryException  $e) {
-            return ApiResponses::error("No puedes crear otro contacto con el mismo número", 422, ["message"=>"Ya tienes un contacto con ese número"]);
-        }
-        catch (Exception $e){
+        } catch (QueryException $e) {
+            return ApiResponses::error("No puedes crear otro contacto con el mismo número", 422, ["message" => "Ya tienes un contacto con ese número"]);
+        } catch (Exception $e) {
             return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
         }
     }
@@ -96,12 +100,13 @@ class ContactController extends Controller
     public function destroy($id)
     {
         try {
-           return $this->contactRepository->delete($id);
-        } catch (ModelNotFoundException $e){
+            $this->contactRepository->delete($id);
+            return ApiResponses::succes('Se borró correctamente el contacto.', 200);
+
+        } catch (ModelNotFoundException $e) {
             return ApiResponses::error('Contacto no encontrado', 404);
-        }
-        catch (Exception $e) {
-           return ApiResponses::error('Ha ocurrido un error', $e->getMessage(), 500);
+        } catch (Exception $e) {
+            return ApiResponses::error('Ha ocurrido un error', $e->getMessage(), 500);
         }
     }
 }

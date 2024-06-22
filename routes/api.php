@@ -28,11 +28,12 @@ Route::group(['middleware' => ["auth:sanctum"]], function () {
         Route::get('auth/profile', 'userProfile');
         Route::post('auth/logout', 'logout');
     });
+    //metodos de usuario
     Route::controller(UserController::class)->group(function () {
         Route::post('auth/changePassword', 'changePassword');
         Route::put('auth/editProfile', 'editProfile');
     });
-
+    //metodos de contactos
     Route::controller(ContactController::class)->group(function () {
         Route::get('contact', 'index');
         Route::post('contact', 'store');

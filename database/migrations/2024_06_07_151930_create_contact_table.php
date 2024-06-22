@@ -19,7 +19,6 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
 
-            // Para que el usuario solo sea el celular unico solo para el usuario que lo creo
             $table->softDeletes();
         });
     }

@@ -17,12 +17,13 @@ class AuthController extends Controller
     public function __construct(
         AuthRepository $authRepository,
     ) {
-        $this->authRepository=$authRepository;
+        $this->authRepository = $authRepository;
     }
     public function register(AuthRegisterRequest $request)
     {
         try {
-            return $this->authRepository->register($request);
+            $this->authRepository->register($request);
+            return ApiResponses::succes("Usuario creado correctamente", 201);
         } catch (ValidationException $e) {
             $errors = $e->validator->errors()->toArray();
             return ApiResponses::error("Error de validación", 422, $errors);
@@ -50,7 +51,8 @@ class AuthController extends Controller
     public function userProfile()
     {
         try {
-            return $this->authRepository->userProfile();
+            $user = $this->authRepository->userProfile();
+            return ApiResponses::succes("Perfil de usuario", 200, $user);
         } catch (Exception $e) {
             return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
         }
@@ -60,7 +62,8 @@ class AuthController extends Controller
     public function logout()
     {
         try {
-            return $this->authRepository->logout();
+            $this->authRepository->logout();
+            return ApiResponses::succes("Cierre de sesión exitoso", 200);
         } catch (Exception $e) {
             return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
         }
