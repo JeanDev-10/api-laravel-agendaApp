@@ -8,6 +8,8 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\Rule;
+use Auth;
+use Illuminate\Support\Facades\Crypt;
 
 class ContactUpdateRegisterRequest extends FormRequest
 {
@@ -26,6 +28,7 @@ class ContactUpdateRegisterRequest extends FormRequest
      */
     public function rules(): array
     {
+        $id=Crypt::decrypt($this->route('id'));
         return [
             'name' => 'required|string|min:3|max:255',
             'phone' => [
@@ -33,6 +36,9 @@ class ContactUpdateRegisterRequest extends FormRequest
                 'string',
                 'min:10',
                 'max:10',
+                Rule::unique('contacts')->where(function ($query) {
+                    return $query->where('user_id', Auth::guard('sanctum')->user()->id)->whereNull('deleted_at');
+                })->ignore($id),
             ],
             'nickname' => 'nullable|string|min:3|max:255'
         ];

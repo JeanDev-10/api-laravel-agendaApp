@@ -8,7 +8,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\Rule;
-
+use Auth;
 class ContactRegisterRequest extends FormRequest
 {
     /**
@@ -33,7 +33,9 @@ class ContactRegisterRequest extends FormRequest
                 'string',
                 'min:10',
                 'max:10',
-
+                Rule::unique('contacts')->where(function ($query) {
+                    return $query->where('user_id', Auth::guard('sanctum')->user()->id)->whereNull('deleted_at');
+                }),
             ],
             'nickname' => 'nullable|string|min:3|max:255'
         ];
