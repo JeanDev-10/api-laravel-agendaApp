@@ -11,7 +11,11 @@ class UserRepository implements UserInterface{
         $id = Auth::guard('sanctum')->user()->id;
         $user = User::where("id", "=", $id)->first();
             if(Hash::check($request->password, $user->password)){
-                $user->password=Hash::make($request->new_password);
+                $encryptedPassword=Hash::make($request->new_password);
+                if(Hash::check($request->password, $encryptedPassword)){
+                  return ApiResponses::error("No hay cambios en las contraseñas", 422);
+                }
+                $user->password=$encryptedPassword;
                 $user->save();
                 return ApiResponses::succes("Contraseña actualizada exitosamente", 200);
             }else{

@@ -43,22 +43,18 @@ class ContactRepository implements ContactInterface
         return $contact;
     }
 
-    public function update(Request $request, $idEncrypted)
+    public function update(Contact $contacto,Request $request)
     {
-        $userID = Auth::guard('sanctum')->user()->id;
-        $contacto = Contact::where(['id' => Crypt::decrypt($idEncrypted)])->firstOrFail();
         $contacto->update([
             'name' => $request->name,
             'phone' => $request->phone,
             'nickname' => $request->has('nickname') ? $request->nickname : null,
-            'user_id' => $userID
         ]);
 
     }
 
-    public function delete($idEncrypted)
+    public function delete(Contact $contacto)
     {
-        $contact = Contact::where(['id' => Crypt::decrypt($idEncrypted)])->firstOrFail();
-        $contact->delete();
+        $contacto->delete();
     }
 }
