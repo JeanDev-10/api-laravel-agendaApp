@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Repository\Auth\AuthRepository;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\QueryException;
-use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Responses\ApiResponses;
@@ -20,10 +21,12 @@ class ContactController extends Controller
      */
 
     private ContactRepository $contactRepository;
+    private AuthRepository $authRepository;
 
-    public function __construct(ContactRepository $contactRepository)
+    public function __construct(ContactRepository $contactRepository, AuthRepository $authRepository)
     {
         $this->contactRepository = $contactRepository;
+        $this->authRepository = $authRepository;
     }
 
     public function index()
@@ -79,7 +82,12 @@ class ContactController extends Controller
     public function update(ContactUpdateRegisterRequest $request, $id)
     {
         try {
-            $this->contactRepository->update($request, $id);
+            $contacto = $this->contactRepository->show($id);
+            $user = $this->authRepository->userProfile();
+            if(!($contacto->user_id==$user->id)){
+                throw new AuthorizationException();
+            }
+            $this->contactRepository->update($contacto, $request);
             return ApiResponses::succes('Se actualizó correctamente el contacto', 202);
 
         } catch (ModelNotFoundException $e) {
@@ -89,6 +97,8 @@ class ContactController extends Controller
             return ApiResponses::error("Error de validación", 422, $errors);
         } catch (QueryException $e) {
             return ApiResponses::error("No puedes crear otro contacto con el mismo número", 422, ["message" => "Ya tienes un contacto con ese número"]);
+        } catch (AuthorizationException $e) {
+            return ApiResponses::error('No estás autorizado para realizar esta acción.', 403);
         } catch (Exception $e) {
             return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
         }
@@ -100,11 +110,18 @@ class ContactController extends Controller
     public function destroy($id)
     {
         try {
-            $this->contactRepository->delete($id);
+            $contacto = $this->contactRepository->show($id);
+            $user = $this->authRepository->userProfile();
+            if(!($contacto->user_id==$user->id)){
+                throw new AuthorizationException();
+            }
+            $this->contactRepository->delete($contacto);
             return ApiResponses::succes('Se borró correctamente el contacto.', 200);
 
         } catch (ModelNotFoundException $e) {
             return ApiResponses::error('Contacto no encontrado', 404);
+        } catch (AuthorizationException $e) {
+            return ApiResponses::error('No estás autorizado para realizar esta acción.', 403);
         } catch (Exception $e) {
             return ApiResponses::error('Ha ocurrido un error', $e->getMessage(), 500);
         }
