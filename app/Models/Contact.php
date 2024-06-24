@@ -20,7 +20,7 @@ class Contact extends Model
         'nickname',
         'user_id',
     ];
-    protected $hidden = ['user_id', 'deleted_at', 'id'];
+    protected $hidden = ['user_id', 'deleted_at'];
     public function User():BelongsTo{
         return $this->belongsTo(User::class);
     }

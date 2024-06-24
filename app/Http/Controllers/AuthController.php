@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Auth\AuthLoginRequest;
 use App\Http\Requests\Auth\AuthRegisterRequest;
+use App\Http\Resources\user\UserResource;
 use App\Repository\Auth\AuthRepository;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -52,7 +53,7 @@ class AuthController extends Controller
     {
         try {
             $user = $this->authRepository->userProfile();
-            return ApiResponses::succes("Perfil de usuario", 200, $user);
+            return ApiResponses::succes("Perfil de usuario", 200, new UserResource($user));
         } catch (Exception $e) {
             return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
         }
