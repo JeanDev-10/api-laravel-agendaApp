@@ -40,6 +40,7 @@ class ContactRepository implements ContactInterface
     {
 
         $contact = Contact::where(['id' => Crypt::decrypt($idEncrypted)])->firstOrFail();
+        $contact->encrypted_id = Crypt::encrypt($contact->id);
         return $contact;
     }
 
