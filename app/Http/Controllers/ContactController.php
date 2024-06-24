@@ -90,7 +90,7 @@ class ContactController extends Controller
                 throw new AuthorizationException();
             }
             unset($contacto['encrypted_id']);
-            dd($contacto);
+      
 
             $this->contactRepository->update($contacto, $request);
 
