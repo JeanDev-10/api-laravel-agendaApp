@@ -1,8 +1,8 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Auth",
-        "description": "Metodos de authentication",
+        "title": "App Agenda Api",
+        "description": "Metodos de la API",
         "version": "1.0"
     },
     "servers": [
@@ -771,6 +771,61 @@
     },
     "components": {
         "schemas": {
+            "AuthLoginRequest": {
+                "title": "Auth Login Request",
+                "description": "Request body for user login",
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "description": "User's email address",
+                        "type": "string",
+                        "format": "email",
+                        "example": "user@example.com"
+                    },
+                    "password": {
+                        "description": "User's password",
+                        "type": "string",
+                        "example": "password123"
+                    }
+                },
+                "type": "object"
+            },
+            "AuthRegisterRequest": {
+                "title": "Auth Register Request",
+                "required": [
+                    "firstname",
+                    "lastname",
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "firstname": {
+                        "description": "First name of the user",
+                        "type": "string",
+                        "example": "John"
+                    },
+                    "lastname": {
+                        "description": "Last name of the user",
+                        "type": "string",
+                        "example": "Doe"
+                    },
+                    "email": {
+                        "description": "Email address of the user",
+                        "type": "string",
+                        "format": "email",
+                        "example": "john.doe@example.com"
+                    },
+                    "password": {
+                        "description": "Password for the account",
+                        "type": "string",
+                        "example": "secret123"
+                    }
+                },
+                "type": "object"
+            },
             "ContactResource": {
                 "title": "Contact Resource",
                 "description": "Contact resource representation",

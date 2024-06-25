@@ -7,7 +7,38 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Contracts\Validation\Validator;
-
+/**
+ * @OA\Schema(
+ *     schema="AuthRegisterRequest",
+ *     title="Auth Register Request",
+ *     required={"firstname", "lastname", "email", "password"},
+ *     @OA\Property(
+ *         property="firstname",
+ *         type="string",
+ *         description="First name of the user",
+ *         example="John"
+ *     ),
+ *     @OA\Property(
+ *         property="lastname",
+ *         type="string",
+ *         description="Last name of the user",
+ *         example="Doe"
+ *     ),
+ *     @OA\Property(
+ *         property="email",
+ *         type="string",
+ *         format="email",
+ *         description="Email address of the user",
+ *         example="john.doe@example.com"
+ *     ),
+ *     @OA\Property(
+ *         property="password",
+ *         type="string",
+ *         description="Password for the account",
+ *         example="secret123"
+ *     )
+ * )
+ */
 class AuthRegisterRequest extends FormRequest
 {
     /**
