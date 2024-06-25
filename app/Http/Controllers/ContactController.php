@@ -90,7 +90,7 @@ class ContactController extends Controller
                 throw new AuthorizationException();
             }
             unset($contacto['encrypted_id']);
-      
+
 
             $this->contactRepository->update($contacto, $request);
 
@@ -102,7 +102,7 @@ class ContactController extends Controller
             $errors = $e->validator->errors()->toArray();
             return ApiResponses::error("Error de validación", 422, $errors);
         } catch (QueryException $e) {
-            return ApiResponses::error("No puedes crear otro contacto con el mismo número", 422, ["message" => "Ya tienes un contacto con ese número",$e]);
+            return ApiResponses::error("No puedes crear otro contacto con el mismo número", 422, ["message" => "Ya tienes un contacto con ese número", $e]);
         } catch (AuthorizationException $e) {
             return ApiResponses::error('No estás autorizado para realizar esta acción.', 403);
         } catch (Exception $e) {
