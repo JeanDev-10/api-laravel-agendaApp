@@ -17,7 +17,7 @@ class UserRepository implements UserInterface{
                 }
                 $user->password=$encryptedPassword;
                 $user->save();
-                return ApiResponses::succes("Contraseña actualizada exitosamente", 200);
+                return ApiResponses::successs("Contraseña actualizada exitosamente", 200);
             }else{
                 return ApiResponses::error("Contraseña actual incorrecta",401,["message"=>"Contraseña incorrecta"]);
             }
@@ -26,7 +26,7 @@ class UserRepository implements UserInterface{
         $id = Auth::guard('sanctum')->user()->id;
         $user = User::where("id", "=", $id)->first();
             if(Hash::check($request->password, $user->password)){
-                return ApiResponses::succes("Contraseña correcta!", 200);
+                return ApiResponses::successs("Contraseña correcta!", 200);
             }else{
                 return ApiResponses::error("Contraseña actual incorrecta",401,["message"=>"Contraseña incorrecta"]);
             }
@@ -35,12 +35,12 @@ class UserRepository implements UserInterface{
         $id = Auth::guard('sanctum')->user()->id;
         $user = User::where("id", "=", $id)->first();
         if ($request->firstName === $user->firstname && $request->lastName === $user->lastname) {
-            return ApiResponses::succes("No hay cambios, perfil no fue actualizado", 200,["message"=>"No hay cambios, perfil no fue actualizado"]);
+            return ApiResponses::successs("No hay cambios, perfil no fue actualizado", 200,["message"=>"No hay cambios, perfil no fue actualizado"]);
         }
         $user->update([
             "firstname"=>$request->firstName,
             "lastname"=>$request->lastName,
         ]);
-        return ApiResponses::succes("Perfil actualizado exitosamente", 200);
+        return ApiResponses::successs("Perfil actualizado exitosamente", 200);
     }
 }

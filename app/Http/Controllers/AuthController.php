@@ -61,7 +61,7 @@ class AuthController extends Controller
      *     ),
      *     @OA\Response(
      *         response=201,
-     *         description="User created successfully",
+     *         description="User created successsfully",
      *         @OA\JsonContent(
      *             @OA\Property(property="message", type="string", example="Usuario creado correctamente")
      *         )
@@ -87,7 +87,7 @@ class AuthController extends Controller
     {
         try {
             $this->authRepository->register($request);
-            return ApiResponses::succes("Usuario creado correctamente", 201);
+            return ApiResponses::successs("Usuario creado correctamente", 201);
         } catch (ValidationException $e) {
             $errors = $e->validator->errors()->toArray();
             return ApiResponses::error("Error de validación", 422, $errors);
@@ -113,7 +113,7 @@ class AuthController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Login successful",
+     *         description="Login successsful",
      *         @OA\JsonContent(
      *             @OA\Property(property="token", type="string", example="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")
      *         )
@@ -166,7 +166,7 @@ class AuthController extends Controller
  *     security={ {"bearerAuth": {} } },
  *     @OA\Response(
  *         response=200,
- *         description="Successful operation",
+ *         description="successsful operation",
  *         @OA\JsonContent(
  *             @OA\Property(property="message", type="string", example="Perfil de usuario"),
  *             @OA\Property(property="data", ref="#/components/schemas/UserResource")
@@ -192,7 +192,7 @@ class AuthController extends Controller
     {
         try {
             $user = $this->authRepository->userProfile();
-            return ApiResponses::succes("Perfil de usuario", 200, new UserResource($user));
+            return ApiResponses::successs("Perfil de usuario", 200, new UserResource($user));
         } catch (Exception $e) {
             return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
         }
@@ -208,7 +208,7 @@ class AuthController extends Controller
      *     security={ {"bearerAuth": {} } },
      *     @OA\Response(
      *         response=200,
-     *         description="Successful operation",
+     *         description="successsful operation",
      *         @OA\JsonContent(
      *             @OA\Property(property="message", type="string", example="Cierre de sesión exitoso")
      *         )
@@ -233,7 +233,7 @@ class AuthController extends Controller
     {
         try {
             $this->authRepository->logout();
-            return ApiResponses::succes("Cierre de sesión exitoso", 200);
+            return ApiResponses::successs("Cierre de sesión exitoso", 200);
         } catch (Exception $e) {
             return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
         }

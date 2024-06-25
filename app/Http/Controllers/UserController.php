@@ -42,7 +42,7 @@ class UserController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Password changed successfully",
+     *         description="Password changed successsfully",
      *         @OA\JsonContent(
      *             @OA\Property(property="message", type="string", example="Contraseña cambiada exitosamente"),
      *         ),
@@ -184,7 +184,7 @@ class UserController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Profile updated successfully",
+     *         description="Profile updated successsfully",
      *         @OA\JsonContent(
      *             @OA\Property(property="message", type="string", example="Perfil actualizado exitosamente"),
      *         ),

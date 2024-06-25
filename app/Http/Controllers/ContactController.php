@@ -60,7 +60,7 @@ class ContactController extends Controller
     {
         try {
             $contacts = $this->contactRepository->index();
-            return ApiResponses::success('Lista de contactos de un usuario.', 200, ContactResource::collection($contacts));
+            return ApiResponses::successs('Lista de contactos de un usuario.', 200, ContactResource::collection($contacts));
         } catch (Exception $e) {
             return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
         }
@@ -82,7 +82,7 @@ class ContactController extends Controller
      *     ),
      *     @OA\Response(
      *         response=201,
-     *         description="Contact created successfully.",
+     *         description="Contact created successsfully.",
      *     @OA\JsonContent(
      *             @OA\Property(property="message", type="string", example="Se ha creado exitosamente el contacto")
      *         )
@@ -108,7 +108,7 @@ class ContactController extends Controller
     {
         try {
             $this->contactRepository->store($request);
-            return ApiResponses::success('Se ha creado exitosamente el contacto', 201);
+            return ApiResponses::successs('Se ha creado exitosamente el contacto', 201);
         } catch (ValidationException $e) {
             $errors = $e->validator->errors()->toArray();
             return ApiResponses::error("Error de validación", 422, $errors);
@@ -169,7 +169,7 @@ class ContactController extends Controller
     {
         try {
             $contact = $this->contactRepository->show($id);
-            return ApiResponses::success('Mostrando Contacto', 200, new ContactResource($contact));
+            return ApiResponses::successs('Mostrando Contacto', 200, new ContactResource($contact));
         } catch (ModelNotFoundException $e) {
             return ApiResponses::error('Contacto no encontrado', 404);
         } catch (Exception $e) {
@@ -201,7 +201,7 @@ class ContactController extends Controller
  *     ),
  *     @OA\Response(
  *         response=202,
- *         description="Contact updated successfully.",
+ *         description="Contact updated successsfully.",
  *         @OA\JsonContent(
  *             @OA\Property(property="message", type="string", example="Contacto actualizado exitosamente.")
  *         )
@@ -241,21 +241,21 @@ class ContactController extends Controller
         try {
             $contact = $this->contactRepository->show($id);
             $user = $this->authRepository->userProfile();
-            
+
             if (!($contact->user_id == $user->id)) {
                 throw new AuthorizationException();
             }
-            
+            unset($contact['encrypted_id']);
             $this->contactRepository->update($contact, $request);
 
-            return ApiResponses::success('Se actualizó correctamente el contacto', 202);
+            return ApiResponses::successs('Se actualizó correctamente el contacto', 202);
         } catch (ModelNotFoundException $e) {
             return ApiResponses::error('Contacto no encontrado', 404);
         } catch (ValidationException $e) {
             $errors = $e->validator->errors()->toArray();
             return ApiResponses::error("Error de validación", 422, $errors);
         } catch (QueryException $e) {
-            return ApiResponses::error("No puedes crear otro contacto con el mismo número", 422, ["message" => "Ya tienes un contacto con ese número."]);
+            return ApiResponses::error("No puedes crear otro contacto con el mismo número", 422, ["message" => "Ya tienes un contacto con ese número.",$e]);
         } catch (AuthorizationException $e) {
             return ApiResponses::error("No estás autorizado para actualizar este contacto", 403);
         } catch (Exception $e) {
@@ -278,7 +278,7 @@ class ContactController extends Controller
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Contact deleted successfully.",
+ *         description="Contact deleted successsfully.",
  *         @OA\JsonContent(
  *             @OA\Property(property="message", type="string", example="Se borró correctamente el contacto.")
  *         )
@@ -312,14 +312,14 @@ class ContactController extends Controller
         try {
             $contact = $this->contactRepository->show($id);
             $user = $this->authRepository->userProfile();
-            
+
             if (!($contact->user_id == $user->id)) {
                 throw new AuthorizationException();
             }
-            
+
             $this->contactRepository->delete($contact);
-            
-            return ApiResponses::success('Se borró correctamente el contacto.', 200);
+
+            return ApiResponses::successs('Se borró correctamente el contacto.', 200);
         } catch (ModelNotFoundException $e) {
             return ApiResponses::error('Contacto no encontrado', 404);
         } catch (AuthorizationException $e) {

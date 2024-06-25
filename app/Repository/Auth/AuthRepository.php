@@ -15,7 +15,7 @@ class AuthRepository implements AuthInterface{
             if(Hash::check($request->password, $user->password)){
                 //creamos el token
                 $token = $user->createToken("auth_token")->plainTextToken;
-                return ApiResponses::succes("Usuario logeado exitosamente", 200, $token);
+                return ApiResponses::successs("Usuario logeado exitosamente", 200, $token);
             }else{
                 return ApiResponses::error("Credenciales incorrectas",404,["message"=>"Credenciales incorrectas"]);
             }
