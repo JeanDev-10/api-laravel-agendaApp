@@ -25,7 +25,7 @@
 <ol>
     <li><strong>Clonar el repositorio:</strong>
         <pre><code>git clone https://github.com/Jean10112002/api-laravel-agendaApp.git
-cd tu-repositorio</code></pre>
+cd api-laravel-agendaApp</code></pre>
     </li>
     <li><strong>Instalar dependencias:</strong>
         <pre><code>composer install
