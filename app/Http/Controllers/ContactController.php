@@ -31,7 +31,7 @@ class ContactController extends Controller
  *     summary="Get list of contacts",
  *     description="Returns a list of contacts for a user.",
  *     tags={"Contacts"},
- *     security={ {"sanctum": {} } },
+ *     security={ {"bearerAuth": {} } },
  *     @OA\Response(
  *         response=200,
  *         description="List of contacts.",
@@ -72,6 +72,7 @@ class ContactController extends Controller
      *     summary="Create a new contact",
      *     description="Stores a newly created contact in the database.",
      *     tags={"Contacts"},
+     *     security={ {"bearerAuth": {} } },
      *     @OA\RequestBody(
      *     required=true,
      *     @OA\JsonContent(
@@ -124,6 +125,7 @@ class ContactController extends Controller
  *     path="/contact/{id}",
  *     summary="Get contact details",
  *     description="Returns details of a specific contact.",
+ *     security={ {"bearerAuth": {} } },
  *     tags={"Contacts"},
  *     @OA\Parameter(
  *         name="id",
@@ -182,6 +184,7 @@ class ContactController extends Controller
  *     path="/contact/{id}",
  *     summary="Update an existing contact",
  *     description="Updates the details of an existing contact.",
+ *     security={ {"bearerAuth": {} } },
  *     tags={"Contacts"},
  *     @OA\Parameter(
  *         name="id",
@@ -255,7 +258,7 @@ class ContactController extends Controller
             $errors = $e->validator->errors()->toArray();
             return ApiResponses::error("Error de validación", 422, $errors);
         } catch (QueryException $e) {
-            return ApiResponses::error("No puedes crear otro contacto con el mismo número", 422, ["message" => "Ya tienes un contacto con ese número.",$e]);
+            return ApiResponses::error("No puedes crear otro contacto con el mismo número", 422, ["message" => "Ya tienes un contacto con ese número."]);
         } catch (AuthorizationException $e) {
             return ApiResponses::error("No estás autorizado para actualizar este contacto", 403);
         } catch (Exception $e) {
@@ -269,6 +272,7 @@ class ContactController extends Controller
  *     summary="Delete a contact",
  *     description="Deletes a specific contact.",
  *     tags={"Contacts"},
+ *     security={ {"bearerAuth": {} } },
  *     @OA\Parameter(
  *         name="id",
  *         in="path",
