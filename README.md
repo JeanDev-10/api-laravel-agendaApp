@@ -6,7 +6,6 @@
 <body>
     <h1>Descripción del Proyecto</h1>
     <p>Este proyecto consiste en una API desarrollada en Laravel, diseñada para gestionar operaciones CRUD completas, incluyendo autenticación y manejo de tablas relacionadas. Esta API será consumida por un frontend desarrollado en Angular, ofreciendo una solución robusta y eficiente para la gestión de datos.</p>
-
     <h2>Características</h2>
     <ul>
         <li><strong>Autenticación Segura</strong>: Implementación de JWT (JSON Web Tokens) para la autenticación de usuarios, asegurando que solo usuarios autorizados puedan acceder a los recursos.</li>
@@ -16,7 +15,6 @@
         <li><strong>API Documentada</strong>: Documentación completa de la API utilizando Swagger, facilitando la comprensión y uso de los endpoints.</li>
         <li><strong>Integración con Frontend en Angular</strong>: Diseñada para ser consumida por un frontend desarrollado en Angular, proporcionando una experiencia de usuario fluida y dinámica.</li>
     </ul>
-
     <h2>Tecnologías Utilizadas</h2>
     <ul>
         <li><strong>Backend</strong>: Laravel</li>
@@ -25,7 +23,6 @@
         <li><strong>Base de Datos</strong>: MySQL / PostgreSQL / SQLite (dependiendo de la configuración)</li>
         <li><strong>Documentación de API</strong>: Swagger</li>
     </ul>
-
     <h2>Instalación y Configuración</h2>
     <ol>
         <li><strong>Clonar el repositorio</strong>:
@@ -52,13 +49,10 @@ npm install</code></pre>
             <pre><code>php artisan serve</code></pre>
         </li>
     </ol>
-
     <h2>Uso</h2>
     <p>Una vez que el servidor esté en funcionamiento, la API estará disponible en <code>http://localhost:8000</code>. Puedes acceder a la documentación de la API en <code>http://localhost:8000/api/documentation</code>.</p>
-
     <h2>Contribución</h2>
     <p>¡Contribuciones son bienvenidas! Si deseas colaborar, por favor abre un issue o envía un pull request con tus cambios.</p>
-
     <h2>Licencia</h2>
     <p>Este proyecto está bajo la licencia MIT. Consulta el archivo <code>LICENSE</code> para más detalles.</p>
 </body>
