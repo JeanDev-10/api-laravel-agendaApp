@@ -8,6 +8,28 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\ValidationException;
 
+/**
+ * @OA\Schema(
+ *     schema="AuthLoginRequest",
+ *     type="object",
+ *     title="Auth Login Request",
+ *     description="Request body for user login",
+ *     required={"email", "password"},
+ *     @OA\Property(
+ *         property="email",
+ *         type="string",
+ *         format="email",
+ *         description="User's email address",
+ *         example="user@example.com"
+ *     ),
+ *     @OA\Property(
+ *         property="password",
+ *         type="string",
+ *         description="User's password",
+ *         example="password123"
+ *     )
+ * )
+ */
 class AuthLoginRequest extends FormRequest
 {
     /**
