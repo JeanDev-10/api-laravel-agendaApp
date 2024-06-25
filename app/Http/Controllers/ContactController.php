@@ -132,7 +132,7 @@ class ContactController extends Controller
  *         in="path",
  *         description="ID of the contact",
  *         required=true,
- *         @OA\Schema(type="integer")
+ *         @OA\Schema(type="string")
  *     ),
  *     @OA\Response(
  *         response=200,
@@ -191,7 +191,7 @@ class ContactController extends Controller
  *         in="path",
  *         description="ID of the contact",
  *         required=true,
- *         @OA\Schema(type="integer")
+ *         @OA\Schema(type="string")
  *     ),
  *     @OA\RequestBody(
  *         required=true,
@@ -278,7 +278,7 @@ class ContactController extends Controller
  *         in="path",
  *         description="ID of the contact",
  *         required=true,
- *         @OA\Schema(type="integer")
+ *         @OA\Schema(type="string")
  *     ),
  *     @OA\Response(
  *         response=200,
