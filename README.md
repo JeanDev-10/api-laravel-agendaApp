@@ -17,14 +17,14 @@
     <li><strong>Backend:</strong> Laravel</li>
     <li><strong>Frontend:</strong> Angular</li>
     <li><strong>Autenticación:</strong> JWT (JSON Web Tokens)</li>
-    <li><strong>Base de Datos:</strong> MySQL / PostgreSQL / SQLite (dependiendo de la configuración)</li>
+    <li><strong>Base de Datos:</strong> MySQL</li>
     <li><strong>Documentación de API:</strong> Swagger</li>
 </ul>
 
 <h2>Instalación y Configuración</h2>
 <ol>
     <li><strong>Clonar el repositorio:</strong>
-        <pre><code>git clone https://github.com/tu-usuario/tu-repositorio.git
+        <pre><code>git clone https://github.com/Jean10112002/api-laravel-agendaApp.git
 cd tu-repositorio</code></pre>
     </li>
     <li><strong>Instalar dependencias:</strong>
@@ -39,9 +39,6 @@ npm install</code></pre>
     </li>
     <li><strong>Migrar y sembrar la base de datos:</strong>
         <pre><code>php artisan migrate --seed</code></pre>
-    </li>
-    <li><strong>Generar la documentación de Swagger:</strong>
-        <pre><code>php artisan l5-swagger:generate</code></pre>
     </li>
     <li><strong>Iniciar el servidor:</strong>
         <pre><code>php artisan serve</code></pre>
