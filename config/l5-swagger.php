@@ -120,7 +120,7 @@ return [
             /**
              * Custom query path processors classes.
              *
-             * @link https://github.com/zircote/swagger-php/tree/master/Examples/processors/schema-query-parameter
+             * @link https://github.com/zircote/swagger-php/tree/master/Examples/schema-query-parameter-processor
              * @see \OpenApi\scan
              */
             'processors' => [
@@ -220,7 +220,7 @@ return [
          * Set this to `true` in development mode so that docs would be regenerated on each request
          * Set this to `false` to disable swagger generation on production
         */
-        'generate_always' => env('L5_SWAGGER_GENERATE_ALWAYS', false),
+        'generate_always' => env('L5_SWAGGER_GENERATE_ALWAYS', true),
 
         /*
          * Set this to `true` to generate a copy of documentation in yaml format
@@ -288,7 +288,6 @@ return [
                     */
                     'use_pkce_with_authorization_code_grant' => false,
                 ],
-
             ],
         ],
         /*
