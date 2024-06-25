@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Contact;
+namespace App\Http\Resources\contact;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -36,6 +36,10 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *     )
  * )
  */
+
+
+
+
 class ContactResource extends JsonResource
 {
     public function toArray($request)

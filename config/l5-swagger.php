@@ -1,6 +1,42 @@
 <?php
 
+
 return [
+    'title' => env('L5_SWAGGER_INFO_TITLE', 'L5 Swagger API'),
+    'description' => env('L5_SWAGGER_INFO_DESCRIPTION', 'Swagger documentation for the API'),
+    'version' => env('L5_SWAGGER_INFO_VERSION', '1.0.0'),
+    'termsOfService' => env('L5_SWAGGER_INFO_TERMS_OF_SERVICE', ''),
+    'contact' => [
+        'name' => env('L5_SWAGGER_INFO_CONTACT_NAME', ''),
+        'email' => env('L5_SWAGGER_INFO_CONTACT_EMAIL', ''),
+        'url' => env('L5_SWAGGER_INFO_CONTACT_URL', ''),
+    ],
+    'license' => [
+        'name' => env('L5_SWAGGER_INFO_LICENSE_NAME', 'Apache 2.0'),
+        'url' => env('L5_SWAGGER_INFO_LICENSE_URL', 'http://www.apache.org/licenses/LICENSE-2.0.html'),
+    ],
+    'servers' => [
+        [
+            'url' => env('L5_SWAGGER_SERVERS_URL', 'http://localhost:8000/api'),
+            'description' => env('L5_SWAGGER_SERVERS_DESCRIPTION', 'Development Server'),
+        ],
+    ],
+
+    // Añadir la configuración de securityDefinitions y security
+    'securityDefinitions' => [
+        'Sanctum' => [
+            'type' => 'apiKey',
+            'description' => 'Sanctum token based authentication. Example: "Authorization: Bearer {token}"',
+            'name' => 'Authorization',
+            'in' => 'header',
+        ],
+    ],
+    'security' => [
+        [
+            'Sanctum' => []
+        ]
+    ],
+
     'default' => 'default',
     'documentations' => [
         'default' => [
@@ -298,3 +334,4 @@ return [
         ],
     ],
 ];
+

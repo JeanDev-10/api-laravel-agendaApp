@@ -13,9 +13,9 @@ use App\Http\Responses\ApiResponses;
 
 /**
  * @OA\Info(
- *             title="App Agenda Api",
+ *             title="AppAgendaApi",
  *             version="1.0",
- *             description="Metodos de la API"
+ *             description="Lista de Endspoints"
  * )
  *
  * @OA\Server(url="http://localhost:8000/api/")
