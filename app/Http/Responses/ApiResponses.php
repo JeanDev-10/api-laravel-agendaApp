@@ -3,7 +3,7 @@
 namespace App\Http\Responses;
 use App\Interfaces\ApiResponse\ApiResponseInterface;
 class ApiResponses implements ApiResponseInterface{
-    public static function succes($message="success",$statusCode=200,$data=[]){
+    public static function successs($message="successs",$statusCode=200,$data=[]){
         return response()->json([
             "message"=>$message,
             'statusCode'=>$statusCode,

@@ -57,7 +57,7 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "User created successfully",
+                        "description": "User created successsfully",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -146,7 +146,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Login successful",
+                        "description": "Login successsful",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -225,7 +225,7 @@
                 "operationId": "userProfile",
                 "responses": {
                     "200": {
-                        "description": "Successful operation",
+                        "description": "successsful operation",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -293,7 +293,7 @@
                 "operationId": "logout",
                 "responses": {
                     "200": {
-                        "description": "Successful operation",
+                        "description": "successsful operation",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -443,7 +443,7 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Contact created successfully.",
+                        "description": "Contact created successsfully.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -644,7 +644,7 @@
                 },
                 "responses": {
                     "202": {
-                        "description": "Contact updated successfully.",
+                        "description": "Contact updated successsfully.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -745,7 +745,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Contact deleted successfully.",
+                        "description": "Contact deleted successsfully.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -854,7 +854,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Password changed successfully",
+                        "description": "Password changed successsfully",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1136,7 +1136,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Profile updated successfully",
+                        "description": "Profile updated successsfully",
                         "content": {
                             "application/json": {
                                 "schema": {

@@ -44,7 +44,7 @@ paths:
               type: object
       responses:
         '201':
-          description: 'User created successfully'
+          description: 'User created successsfully'
           content:
             application/json:
               schema:
@@ -95,7 +95,7 @@ paths:
               type: object
       responses:
         '200':
-          description: 'Login successful'
+          description: 'Login successsful'
           content:
             application/json:
               schema:
@@ -136,7 +136,7 @@ paths:
       operationId: userProfile
       responses:
         '200':
-          description: 'Successful operation'
+          description: 'successsful operation'
           content:
             application/json:
               schema:
@@ -172,7 +172,7 @@ paths:
       operationId: logout
       responses:
         '200':
-          description: 'Successful operation'
+          description: 'successsful operation'
           content:
             application/json:
               schema:
@@ -230,7 +230,7 @@ paths:
               $ref: '#/components/schemas/ContactRegisterRequest'
       responses:
         '201':
-          description: 'Contact created successfully.'
+          description: 'Contact created successsfully.'
         '422':
           description: 'Validation error.'
         '500':
@@ -283,7 +283,7 @@ paths:
               $ref: '#/components/schemas/ContactUpdateRegisterRequest'
       responses:
         '202':
-          description: 'Contact updated successfully.'
+          description: 'Contact updated successsfully.'
         '404':
           description: 'Contact not found.'
         '422':
@@ -325,7 +325,7 @@ paths:
               type: object
       responses:
         '200':
-          description: 'Password changed successfully'
+          description: 'Password changed successsfully'
           content:
             application/json:
               schema:
@@ -394,7 +394,7 @@ paths:
               type: object
       responses:
         '200':
-          description: 'Profile updated successfully'
+          description: 'Profile updated successsfully'
           content:
             application/json:
               schema:
