@@ -1,36 +1,13 @@
 <?php
-
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\User;
 
 use App\Http\Responses\ApiResponses;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Contracts\Validation\Validator;
 
-/**
- * @OA\Schema(
- *     schema="AuthLoginRequest",
- *     type="object",
- *     title="Auth Login Request",
- *     description="Request body for user login",
- *     required={"email", "password"},
- *     @OA\Property(
- *         property="email",
- *         type="string",
- *         format="email",
- *         description="User's email address",
- *         example="user@example.com"
- *     ),
- *     @OA\Property(
- *         property="password",
- *         type="string",
- *         description="User's password",
- *         example="password123"
- *     )
- * )
- */
-class AuthLoginRequest extends FormRequest
+class CheckThePasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -48,8 +25,8 @@ class AuthLoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "email" => "required|email",
-            "password" => "required"
+            'password' => 'required|min:3|max:10',
+
         ];
     }
     protected function failedValidation(Validator $validator)

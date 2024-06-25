@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\User\CheckThePasswordRequest;
 use App\Http\Requests\User\UserChangePasswordRequest;
 use App\Http\Requests\User\UserEditProfileRequest;
 use App\Http\Responses\ApiResponses;
@@ -81,6 +82,79 @@ class UserController extends Controller
     {
         try {
             return $this->userRepository->changePassword($request);
+        } catch (ValidationException $e) {
+            $errors = $e->validator->errors()->toArray();
+            return ApiResponses::error("Error de validación", 422, $errors);
+        } catch (ModelNotFoundException) {
+            return ApiResponses::error("No existe el usuario", 404);
+        } catch (Exception $e) {
+            return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
+        }
+    }
+
+    /**
+ * @OA\Post(
+ *     path="/auth/check-password",
+ *     summary="Check the user's password",
+ *     description="Endpoint to verify if the provided password is correct",
+ *     operationId="checkThePassword",
+ *     tags={"User"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"password"},
+ *             @OA\Property(property="password", type="string", minLength=3, maxLength=10, example="yourpassword")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Password is correct",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Contraseña correcta!"),
+ *             @OA\Property(property="status", type="integer", example=200)
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Incorrect password",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Contraseña actual incorrecta"),
+ *             @OA\Property(property="status", type="integer", example=401),
+ *             @OA\Property(property="errors", type="object", example={"message":"Contraseña incorrecta"})
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=422,
+ *         description="Validation error",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Error de validación"),
+ *             @OA\Property(property="status", type="integer", example=422),
+ *             @OA\Property(property="errors", type="object", example={"password":{"El campo contraseña es obligatorio"}})
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="User not found",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="No existe el usuario"),
+ *             @OA\Property(property="status", type="integer", example=404)
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="Internal server error",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Ha ocurrido un error: {error_message}"),
+ *             @OA\Property(property="status", type="integer", example=500)
+ *         )
+ *     )
+ * )
+ */
+    public function checkThePassword(CheckThePasswordRequest $request)
+    {
+        try {
+            return $this->userRepository->CheckThePassword($request);
         } catch (ValidationException $e) {
             $errors = $e->validator->errors()->toArray();
             return ApiResponses::error("Error de validación", 422, $errors);

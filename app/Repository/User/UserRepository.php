@@ -22,6 +22,15 @@ class UserRepository implements UserInterface{
                 return ApiResponses::error("Contraseña actual incorrecta",401,["message"=>"Contraseña incorrecta"]);
             }
     }
+    public function CheckThePassword(Request $request){
+        $id = Auth::guard('sanctum')->user()->id;
+        $user = User::where("id", "=", $id)->first();
+            if(Hash::check($request->password, $user->password)){
+                return ApiResponses::succes("Contraseña correcta!", 200);
+            }else{
+                return ApiResponses::error("Contraseña actual incorrecta",401,["message"=>"Contraseña incorrecta"]);
+            }
+    }
     public function editProfile(Request $request){
         $id = Auth::guard('sanctum')->user()->id;
         $user = User::where("id", "=", $id)->first();

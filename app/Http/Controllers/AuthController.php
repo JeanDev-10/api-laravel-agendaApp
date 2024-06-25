@@ -19,7 +19,17 @@ use App\Http\Responses\ApiResponses;
  * )
  *
  * @OA\Server(url="http://localhost:8000/api/")
+ * @OA\SecurityScheme(
+ *     type="http",
+ *     description="Token de autenticación",
+ *     name="BearerToken",
+ *     in="header",
+ *     scheme="bearer",
+ *     bearerFormat="JWT",
+ *     securityScheme="bearerAuth",
+ * )
  */
+
 
 class AuthController extends Controller
 {

@@ -31,6 +31,7 @@ Route::group(['middleware' => ["auth:sanctum"]], function () {
     //metodos de usuario
     Route::controller(UserController::class)->group(function () {
         Route::post('auth/changePassword', 'changePassword');
+        Route::post('auth/check-password', 'checkThePassword');
         Route::put('auth/editProfile', 'editProfile');
     });
     //metodos de contactos
