@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\ContactResource;
+use App\Http\Resources\contact\ContactResource;
 use App\Repository\Auth\AuthRepository;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\QueryException;
@@ -25,23 +25,37 @@ class ContactController extends Controller
         $this->authRepository = $authRepository;
     }
 
-    /**
-     * @OA\Get(
-     *     path="/contacts",
-     *     summary="Get list of contacts",
-     *     description="Returns a list of contacts for a user.",
-     *     tags={"Contacts"},
-     *     @OA\Response(
-     *         response=200,
-     *         description="List of contacts.",
-     *         @OA\JsonContent(type="array", @OA\Items(ref="App\Http\Resources\contact\ContactResource"))
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Internal server error."
-     *     )
-     * )
-     */
+/**
+ * @OA\Get(
+ *     path="/contact",
+ *     summary="Get list of contacts",
+ *     description="Returns a list of contacts for a user.",
+ *     tags={"Contacts"},
+ *     security={ {"sanctum": {} } },
+ *     @OA\Response(
+ *         response=200,
+ *         description="List of contacts.",
+ *         @OA\JsonContent(
+ *             type="array",
+ *             @OA\Items(ref="App\Http\Resources\contact\ContactResource")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Unauthenticated",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+ *         )
+ *     ),
+ *         @OA\Response(
+ *         response=500,
+ *         description="Internal server error",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Ha ocurrido un error: {error_message}")
+ *         )
+ *     )
+ * )
+ */
     public function index()
     {
         try {
@@ -54,26 +68,40 @@ class ContactController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/contacts",
+     *     path="/contact",
      *     summary="Create a new contact",
      *     description="Stores a newly created contact in the database.",
      *     tags={"Contacts"},
      *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(ref="App\Http\Resources\contact\ContactRegisterRequest")
+     *     required=true,
+     *     @OA\JsonContent(
+     *             required={"name", "phone"},
+     *             @OA\Property(property="name", type="string", example="John"),
+     *             @OA\Property(property="phone", nullable=true ,type="string", example="0993854921"),
+     *         ),
      *     ),
      *     @OA\Response(
      *         response=201,
-     *         description="Contact created successfully."
+     *         description="Contact created successfully.",
+     *     @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Se ha creado exitosamente el contacto")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=422,
-     *         description="Validation error."
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Error de validación"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
      *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Internal server error."
-     *     )
+     *      @OA\Response(
+     *        response=500,
+     *        description="Internal server error",
+     *        @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Ha ocurrido un error: {error_message}")
+     *         )
+     *      )
      * )
      */
     public function store(ContactRegisterRequest $request)
@@ -91,34 +119,52 @@ class ContactController extends Controller
         }
     }
 
-    /**
-     * @OA\Get(
-     *     path="/contacts/{id}",
-     *     summary="Get contact details",
-     *     description="Returns details of a specific contact.",
-     *     tags={"Contacts"},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         description="ID of the contact",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Contact details.",
-     *         @OA\JsonContent(ref="App\Http\Resources\contact\ContactRegisterRequest")
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Contact not found."
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Internal server error."
-     *     )
-     * )
-     */
+/**
+ * @OA\Get(
+ *     path="/contact/{id}",
+ *     summary="Get contact details",
+ *     description="Returns details of a specific contact.",
+ *     tags={"Contacts"},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         description="ID of the contact",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Contact details.",
+ *         @OA\JsonContent(
+ *             required={"name", "phone"},
+ *             @OA\Property(property="name", type="string", example="John"),
+ *             @OA\Property(property="phone", type="string", example="0993854921"),
+ *             @OA\Property(property="nickname", type="string", nullable=true, example="Jhon23")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Contact not found.",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Contacto no encontrado")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Unauthenticated.",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="No autenticado.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="Internal server error.",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Ha ocurrido un error: {error_message}")
+ *         )
+ *     )
+ * )
+ */
     public function show($id)
     {
         try {
@@ -131,45 +177,65 @@ class ContactController extends Controller
         }
     }
 
-    /**
-     * @OA\Put(
-     *     path="/contacts/{id}",
-     *     summary="Update an existing contact",
-     *     description="Updates the details of an existing contact.",
-     *     tags={"Contacts"},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         description="ID of the contact",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(ref="App\Http\Resources\contact\Contact")
-     *     ),
-     *     @OA\Response(
-     *         response=202,
-     *         description="Contact updated successfully."
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Contact not found."
-     *     ),
-     *     @OA\Response(
-     *         response=422,
-     *         description="Validation error."
-     *     ),
-     *     @OA\Response(
-     *         response=403,
-     *         description="Not authorized."
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Internal server error."
-     *     )
-     * )
-     */
+/**
+ * @OA\Put(
+ *     path="/contact/{id}",
+ *     summary="Update an existing contact",
+ *     description="Updates the details of an existing contact.",
+ *     tags={"Contacts"},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         description="ID of the contact",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\RequestBody(
+ *         required=true,
+ *     @OA\JsonContent(
+ *             required={"name", "phone"},
+ *             @OA\Property(property="name", type="string", example="John"),
+ *             @OA\Property(property="phone" ,type="string", example="0993854921"),
+ *             @OA\Property(property="nickname" ,type="string", nullable=true ,example="Jhon123"),
+ *         ),
+ *     ),
+ *     @OA\Response(
+ *         response=202,
+ *         description="Contact updated successfully.",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Contacto actualizado exitosamente.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Contact not found.",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Contacto no encontrado.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=422,
+ *         description="Validation error.",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Error de validación: {validation_errors}")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=403,
+ *         description="Not authorized.",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="No autorizado para realizar esta acción.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="Internal server error.",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Error interno del servidor.")
+ *         )
+ *     )
+ * )
+ */
     public function update(ContactUpdateRegisterRequest $request, $id)
     {
         try {
@@ -197,37 +263,50 @@ class ContactController extends Controller
         }
     }
 
-    /**
-     * @OA\Delete(
-     *     path="/contacts/{id}",
-     *     summary="Delete a contact",
-     *     description="Deletes a specific contact.",
-     *     tags={"Contacts"},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         description="ID of the contact",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Contact deleted successfully."
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Contact not found."
-     *     ),
-     *     @OA\Response(
-     *         response=403,
-     *         description="Not authorized."
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Internal server error."
-     *     )
-     * )
-     */
+/**
+ * @OA\Delete(
+ *     path="/contact/{id}",
+ *     summary="Delete a contact",
+ *     description="Deletes a specific contact.",
+ *     tags={"Contacts"},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         description="ID of the contact",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Contact deleted successfully.",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Se borró correctamente el contacto.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Contact not found.",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Contacto no encontrado.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=403,
+ *         description="Not authorized.",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="No autorizado para realizar esta acción.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="Internal server error.",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Error interno del servidor.")
+ *         )
+ *     )
+ * )
+ */
+
     public function destroy($id)
     {
         try {

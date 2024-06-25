@@ -1,8 +1,8 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Auth",
-        "description": "Metodos de authentication",
+        "title": "AppAgendaApi",
+        "description": "Lista de Endspoints",
         "version": "1.0"
     },
     "servers": [
@@ -348,14 +348,14 @@
                 ]
             }
         },
-        "/contacts": {
+        "/contact": {
             "get": {
                 "tags": [
                     "Contacts"
                 ],
                 "summary": "Get list of contacts",
                 "description": "Returns a list of contacts for a user.",
-                "operationId": "e670331f5da6af785062a857ec92def2",
+                "operationId": "be5734b06f413963e908d91b37a45688",
                 "responses": {
                     "200": {
                         "description": "List of contacts.",
@@ -364,16 +364,50 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/Contact"
+                                        "$ref": "#/components/schemas/ContactResource"
                                     }
                                 }
                             }
                         }
                     },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
                     "500": {
-                        "description": "Internal server error."
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ha ocurrido un error: {error_message}"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
@@ -381,38 +415,95 @@
                 ],
                 "summary": "Create a new contact",
                 "description": "Stores a newly created contact in the database.",
-                "operationId": "77b53a0b0cb97bf04eafa192e4cbac4e",
+                "operationId": "a9d703d146937636b69eb7e9825da5de",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "App\\Http\\Resources\\contact\\ContactRegisterRequest"
+                                "required": [
+                                    "name",
+                                    "phone"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "John"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "0993854921",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
                             }
                         }
                     }
                 },
                 "responses": {
                     "201": {
-                        "description": "Contact created successfully."
+                        "description": "Contact created successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Se ha creado exitosamente el contacto"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "422": {
-                        "description": "Validation error."
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error de validación"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "500": {
-                        "description": "Internal server error."
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ha ocurrido un error: {error_message}"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
         },
-        "/contacts/{id}": {
+        "/contact/{id}": {
             "get": {
                 "tags": [
                     "Contacts"
                 ],
                 "summary": "Get contact details",
                 "description": "Returns details of a specific contact.",
-                "operationId": "4c4e002507e3a53acc022b210aad20ac",
+                "operationId": "1b579c4ee42fd76ec5ac9af9490d2fef",
                 "parameters": [
                     {
                         "name": "id",
@@ -430,16 +521,77 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "App\\Http\\Resources\\contact\\ContactRegisterRequest"
+                                    "required": [
+                                        "name",
+                                        "phone"
+                                    ],
+                                    "properties": {
+                                        "name": {
+                                            "type": "string",
+                                            "example": "John"
+                                        },
+                                        "phone": {
+                                            "type": "string",
+                                            "example": "0993854921"
+                                        },
+                                        "nickname": {
+                                            "type": "string",
+                                            "example": "Jhon23",
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
                     },
                     "404": {
-                        "description": "Contact not found."
+                        "description": "Contact not found.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Contacto no encontrado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No autenticado."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "500": {
-                        "description": "Internal server error."
+                        "description": "Internal server error.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ha ocurrido un error: {error_message}"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -449,7 +601,7 @@
                 ],
                 "summary": "Update an existing contact",
                 "description": "Updates the details of an existing contact.",
-                "operationId": "adc814a54ff3a1fdc424293b19ffe8a7",
+                "operationId": "6a6b37b9b675a12158c683059f5da1e4",
                 "parameters": [
                     {
                         "name": "id",
@@ -466,26 +618,110 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "App\\Http\\Resources\\contact\\Contact"
+                                "required": [
+                                    "name",
+                                    "phone"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "John"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "0993854921"
+                                    },
+                                    "nickname": {
+                                        "type": "string",
+                                        "example": "Jhon123",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
                             }
                         }
                     }
                 },
                 "responses": {
                     "202": {
-                        "description": "Contact updated successfully."
+                        "description": "Contact updated successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Contacto actualizado exitosamente."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "404": {
-                        "description": "Contact not found."
+                        "description": "Contact not found.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Contacto no encontrado."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "422": {
-                        "description": "Validation error."
+                        "description": "Validation error.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error de validación: {validation_errors}"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "403": {
-                        "description": "Not authorized."
+                        "description": "Not authorized.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No autorizado para realizar esta acción."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "500": {
-                        "description": "Internal server error."
+                        "description": "Internal server error.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error interno del servidor."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -495,7 +731,7 @@
                 ],
                 "summary": "Delete a contact",
                 "description": "Deletes a specific contact.",
-                "operationId": "bc8b0b91abd89481c321fcdb966dc355",
+                "operationId": "c9e9877ffb6a48a84dc076537a57bc9e",
                 "parameters": [
                     {
                         "name": "id",
@@ -509,16 +745,68 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Contact deleted successfully."
+                        "description": "Contact deleted successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Se borró correctamente el contacto."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "404": {
-                        "description": "Contact not found."
+                        "description": "Contact not found.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Contacto no encontrado."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "403": {
-                        "description": "Not authorized."
+                        "description": "Not authorized.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No autorizado para realizar esta acción."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "500": {
-                        "description": "Internal server error."
+                        "description": "Internal server error.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error interno del servidor."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -794,20 +1082,14 @@
     },
     "components": {
         "schemas": {
-            "Contact": {
-                "title": "Contact",
-                "description": "Contact model",
+            "ContactRegisterRequest": {
+                "title": "Contact Register Request",
+                "description": "Request body for creating a new contact",
                 "required": [
-                    "id",
                     "name",
                     "phone"
                 ],
                 "properties": {
-                    "id": {
-                        "description": "Contact ID",
-                        "type": "integer",
-                        "example": "1"
-                    },
                     "name": {
                         "description": "Contact name",
                         "type": "string",
@@ -817,6 +1099,59 @@
                         "description": "Contact phone number",
                         "type": "string",
                         "example": "123456789"
+                    },
+                    "nickname": {
+                        "description": "Nickame phone",
+                        "type": "string",
+                        "example": "Jhon3"
+                    }
+                },
+                "type": "object"
+            },
+            "ContactUpdateRegisterRequest": {
+                "title": "Contact Update Request",
+                "description": "Request body for updating a contact",
+                "required": [
+                    "name",
+                    "phone"
+                ],
+                "properties": {
+                    "name": {
+                        "description": "Contact name",
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "phone": {
+                        "description": "Contact phone number",
+                        "type": "string",
+                        "example": "123456789"
+                    }
+                },
+                "type": "object"
+            },
+            "ContactResource": {
+                "title": "Contact Resource",
+                "description": "Contact resource representation",
+                "properties": {
+                    "id": {
+                        "description": "Id of the contact (encrypted)",
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "name": {
+                        "description": "Name of the contact",
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "phone": {
+                        "description": "Phone number of the contact",
+                        "type": "string",
+                        "example": "123456789"
+                    },
+                    "nickname": {
+                        "description": "Nickname of the contact",
+                        "type": "string",
+                        "example": "Johnny"
                     }
                 },
                 "type": "object"

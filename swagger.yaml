@@ -1,18 +1,17 @@
 openapi: 3.0.0
 info:
   title: Auth
-  description: 'Metodos de authentication'
+  description: Metodos de authentication
   version: '1.0'
 servers:
-  -
-    url: 'http://localhost:8000/api/'
+  - url: 'http://localhost:8000/api/'
 paths:
   /auth/register:
     post:
       tags:
         - Auth
-      summary: 'Register a new user'
-      description: 'Endpoint to register a new user'
+      summary: Register a new user
+      description: Endpoint to register a new user
       operationId: register
       requestBody:
         required: true
@@ -42,36 +41,43 @@ paths:
               type: object
       responses:
         '201':
-          description: 'User created successfully'
+          description: User created successfully
           content:
             application/json:
               schema:
                 properties:
-                  message: { type: string, example: 'Usuario creado correctamente' }
+                  message:
+                    type: string
+                    example: Usuario creado correctamente
                 type: object
         '422':
-          description: 'Validation error'
+          description: Validation error
           content:
             application/json:
               schema:
                 properties:
-                  message: { type: string, example: 'Error de validación' }
-                  errors: { type: object }
+                  message:
+                    type: string
+                    example: Error de validación
+                  errors:
+                    type: object
                 type: object
         '500':
-          description: 'Internal server error'
+          description: Internal server error
           content:
             application/json:
               schema:
                 properties:
-                  message: { type: string, example: 'Ha ocurrido un error: {error_message}' }
+                  message:
+                    type: string
+                    example: Ha ocurrido un error: {error_message}
                 type: object
   /auth/login:
     post:
       tags:
         - Auth
-      summary: 'Login a user'
-      description: 'Endpoint to login a user'
+      summary: Login a user
+      description: Endpoint to login a user
       operationId: login
       requestBody:
         required: true
@@ -93,54 +99,66 @@ paths:
               type: object
       responses:
         '200':
-          description: 'Login successful'
+          description: Login successful
           content:
             application/json:
               schema:
                 properties:
-                  token: { type: string, example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... }
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
                 type: object
         '422':
-          description: 'Validation error'
+          description: Validation error
           content:
             application/json:
               schema:
                 properties:
-                  message: { type: string, example: 'Error de validación' }
-                  errors: { type: object }
+                  message:
+                    type: string
+                    example: Error de validación
+                  errors:
+                    type: object
                 type: object
         '404':
-          description: 'User not found'
+          description: User not found
           content:
             application/json:
               schema:
                 properties:
-                  message: { type: string, example: 'No existe ese registro' }
+                  message:
+                    type: string
+                    example: No existe ese registro
                 type: object
         '500':
-          description: 'Internal server error'
+          description: Internal server error
           content:
             application/json:
               schema:
                 properties:
-                  message: { type: string, example: 'Ha ocurrido un error: {error_message}' }
+                  message:
+                    type: string
+                    example: Ha ocurrido un error: {error_message}
                 type: object
   /auth/profile:
     get:
       tags:
         - Auth
-      summary: 'Get user profile'
-      description: 'Endpoint to get user profile information'
+      summary: Get user profile
+      description: Endpoint to get user profile information
       operationId: userProfile
       responses:
         '200':
-          description: 'Successful operation'
+          description: Successful operation
           content:
             application/json:
               schema:
                 properties:
-                  message: { type: string, example: 'Perfil de usuario' }
-                  data: { $ref: '#/components/schemas/UserResource' }
+                  message:
+                    type: string
+                    example: Perfil de usuario
+                  data:
+                    $ref: '#/components/schemas/UserResource'
                 type: object
         '401':
           description: Unauthenticated
@@ -148,34 +166,39 @@ paths:
             application/json:
               schema:
                 properties:
-                  message: { type: string, example: Unauthenticated. }
+                  message:
+                    type: string
+                    example: Unauthenticated.
                 type: object
         '500':
-          description: 'Internal server error'
+          description: Internal server error
           content:
             application/json:
               schema:
                 properties:
-                  message: { type: string, example: 'Ha ocurrido un error: {error_message}' }
+                  message:
+                    type: string
+                    example: Ha ocurrido un error: {error_message}
                 type: object
       security:
-        -
-          bearerAuth: []
+        - bearerAuth: []
   /auth/logout:
     post:
       tags:
         - Auth
-      summary: 'Logout a user'
-      description: 'Endpoint to logout a user'
+      summary: Logout a user
+      description: Endpoint to logout a user
       operationId: logout
       responses:
         '200':
-          description: 'Successful operation'
+          description: Successful operation
           content:
             application/json:
               schema:
                 properties:
-                  message: { type: string, example: 'Cierre de sesión exitoso' }
+                  message:
+                    type: string
+                    example: Cierre de sesión exitoso
                 type: object
         '401':
           description: Unauthenticated
@@ -183,93 +206,98 @@ paths:
             application/json:
               schema:
                 properties:
-                  message: { type: string, example: Unauthenticated. }
+                  message:
+                    type: string
+                    example: Unauthenticated.
                 type: object
         '500':
-          description: 'Internal server error'
+          description: Internal server error
           content:
             application/json:
               schema:
                 properties:
-                  message: { type: string, example: 'Ha ocurrido un error: {error_message}' }
+                  message:
+                    type: string
+                    example: Ha ocurrido un error: {error_message}
                 type: object
       security:
-        -
-          bearerAuth: []
+        - bearerAuth: []
   /contacts:
     get:
       tags:
         - Contacts
-      summary: 'Get list of contacts'
-      description: 'Returns a list of contacts for a user.'
+      summary: Get list of contacts
+      description: Returns a list of contacts for a user.
       operationId: e670331f5da6af785062a857ec92def2
       responses:
         '200':
-          description: 'List of contacts.'
+          description: List of contacts.
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Contact'
+                  $ref: '#/components/schemas/ContactResource'
         '500':
-          description: 'Internal server error.'
+          description: Internal server error.
     post:
       tags:
         - Contacts
-      summary: 'Create a new contact'
-      description: 'Stores a newly created contact in the database.'
+      summary: Create a new contact
+      description: Stores a newly created contact in the database.
       operationId: 77b53a0b0cb97bf04eafa192e4cbac4e
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ContactRegisterRequest'
+              $ref: '#/components/schemas/ContactResource'
       responses:
         '201':
-          description: 'Contact created successfully.'
+          description: Contact created successfully.
         '422':
-          description: 'Validation error.'
+          description: Validation error.
         '500':
-          description: 'Internal server error.'
-  '/contacts/{id}':
+          description: Internal server error.
+      security:
+        - bearerAuth: []
+  /contacts/{id}:
     get:
       tags:
         - Contacts
-      summary: 'Get contact details'
-      description: 'Returns details of a specific contact.'
+      summary: Get contact details
+      description: Returns details of a specific contact.
       operationId: 4c4e002507e3a53acc022b210aad20ac
       parameters:
-        -
-          name: id
+        - name: id
           in: path
-          description: 'ID of the contact'
+          description: ID of the contact
           required: true
           schema:
             type: integer
       responses:
         '200':
-          description: 'Contact details.'
+          description: Contact details.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Contact'
+                $ref: '#/components/schemas/ContactResource'
         '404':
-          description: 'Contact not found.'
+          description: Contact not found.
         '500':
-          description: 'Internal server error.'
+          description: Internal server error.
+      security:
+        - bearerAuth: []
     put:
       tags:
         - Contacts
-      summary: 'Update an existing contact'
-      description: 'Updates the details of an existing contact.'
+      summary: Update an existing contact
+      description: Updates the details of an existing contact.
       operationId: adc814a54ff3a1fdc424293b19ffe8a7
       parameters:
-        -
-          name: id
+        - name: id
           in: path
-          description: 'ID of the contact'
+          description: ID of the contact
           required: true
           schema:
             type: integer
@@ -278,50 +306,53 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ContactUpdateRegisterRequest'
+              $ref: '#/components/schemas/ContactResource'
       responses:
         '202':
-          description: 'Contact updated successfully.'
+          description: Contact updated successfully.
         '404':
-          description: 'Contact not found.'
+          description: Contact not found.
         '422':
-          description: 'Validation error.'
+          description: Validation error.
         '403':
-          description: 'Not authorized.'
+          description: Not authorized.
         '500':
-          description: 'Internal server error.'
+          description: Internal server error.
+      security:
+        - bearerAuth: []
     delete:
       tags:
         - Contacts
-      summary: 'Delete a contact'
-      description: 'Deletes a specific contact.'
+      summary: Delete a contact
+      description: Deletes a specific contact.
       operationId: bc8b0b91abd89481c321fcdb966dc355
       parameters:
-        -
-          name: id
+        - name: id
           in: path
-          description: 'ID of the contact'
+          description: ID of the contact
           required: true
           schema:
             type: integer
       responses:
         '200':
-          description: 'Contact deleted successfully.'
+          description: Contact deleted successfully.
         '404':
-          description: 'Contact not found.'
+          description: Contact not found.
         '403':
-          description: 'Not authorized.'
+          description: Not authorized.
         '500':
-          description: 'Internal server error.'
+          description: Internal server error.
+      security:
+        - bearerAuth: []
   /auth/changePassword:
     post:
       tags:
         - User
-      summary: 'Change user password'
-      description: 'Endpoint to change user password.'
+      summary: Change user password
+      description: Endpoint to change user password.
       operationId: changePassword
       requestBody:
-        description: 'Password change data'
+        description: Password change data
         required: true
         content:
           application/json:
@@ -346,12 +377,14 @@ paths:
               type: object
       responses:
         '200':
-          description: 'Password changed successfully'
+          description: Password changed successfully
           content:
             application/json:
               schema:
                 properties:
-                  message: { type: string, example: 'Contraseña cambiada exitosamente' }
+                  message:
+                    type: string
+                    example: Contraseña cambiada exitosamente
                 type: object
         '401':
           description: Unauthenticated
@@ -359,45 +392,46 @@ paths:
             application/json:
               schema:
                 properties:
-                  message: { type: string, example: Unauthenticated. }
-                type: object
-        '404':
-          description: 'User not found'
-          content:
-            application/json:
-              schema:
-                properties:
-                  message: { type: string, example: 'No existe el usuario' }
+                  message:
+                    type: string
+                    example: Unauthenticated.
                 type: object
         '422':
-          description: 'Validation error'
+          description: Validation error
           content:
             application/json:
               schema:
                 properties:
-                  message: { type: string, example: 'Error de validación' }
-                  errors: { type: object, example: { password: ['La contraseña actual es incorrecta'] } }
+                  message:
+                    type: string
+                    example: Error de validación
+                  errors:
+                    type: object
+                    example:
+                      password:
+                        - La contraseña actual es incorrecta
                 type: object
         '500':
-          description: 'Server error'
+          description: Server error
           content:
             application/json:
               schema:
                 properties:
-                  message: { type: string, example: 'Ha ocurrido un error: Internal Server Error' }
+                  message:
+                    type: string
+                    example: Ha ocurrido un error: Internal Server Error
                 type: object
       security:
-        -
-          bearerAuth: []
+        - bearerAuth: []
   /auth/editProfile:
     post:
       tags:
         - User
-      summary: 'Edit user profile'
-      description: 'Endpoint to edit user profile information.'
+      summary: Edit user profile
+      description: Endpoint to edit user profile information.
       operationId: editProfile
       requestBody:
-        description: 'Profile update data'
+        description: Profile update data
         required: true
         content:
           application/json:
@@ -415,12 +449,14 @@ paths:
               type: object
       responses:
         '200':
-          description: 'Profile updated successfully'
+          description: Profile updated successfully
           content:
             application/json:
               schema:
                 properties:
-                  message: { type: string, example: 'Perfil actualizado exitosamente' }
+                  message:
+                    type: string
+                    example: Perfil actualizado exitosamente
                 type: object
         '401':
           description: Unauthenticated
@@ -428,77 +464,93 @@ paths:
             application/json:
               schema:
                 properties:
-                  message: { type: string, example: Unauthenticated. }
+                  message:
+                    type: string
+                    example: Unauthenticated.
                 type: object
         '404':
-          description: 'User not found'
+          description: User not found
           content:
             application/json:
               schema:
                 properties:
-                  message: { type: string, example: 'No existe el usuario' }
+                  message:
+                    type: string
+                    example: No existe el usuario
                 type: object
         '422':
-          description: 'Validation error'
+          description: Validation error
           content:
             application/json:
               schema:
                 properties:
-                  message: { type: string, example: 'Error de validación' }
-                  errors: { type: object, example: { firstName: ['El campo nombre es obligatorio'] } }
+                  message:
+                    type: string
+                    example: Error de validación
+                  errors:
+                    type: object
+                    example:
+                      firstName:
+                        - El campo nombre es obligatorio
                 type: object
         '500':
-          description: 'Server error'
+          description: Server error
           content:
             application/json:
               schema:
                 properties:
-                  message: { type: string, example: 'Ha ocurrido un error: Internal Server Error' }
+                  message:
+                    type: string
+                    example: Ha ocurrido un error: Internal Server Error
                 type: object
       security:
-        -
-          bearerAuth: []
+        - bearerAuth: []
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     ContactResource:
-      title: 'Contact Resource'
-      description: 'Contact resource representation'
+      title: Contact Resource
+      description: Contact resource representation
       properties:
         id:
-          description: 'Id of the contact (encrypted)'
+          description: Id of the contact (encrypted)
           type: integer
-          example: '1'
+          example: 1
         name:
-          description: 'Name of the contact'
+          description: Name of the contact
           type: string
-          example: 'John Doe'
+          example: John Doe
         phone:
-          description: 'Phone number of the contact'
+          description: Phone number of the contact
           type: string
-          example: '123456789'
+          example: 123456789
         nickname:
-          description: 'Nickname of the contact'
+          description: Nickname of the contact
           type: string
           example: Johnny
       type: object
     UserResource:
-      title: 'User Resource'
-      description: 'User resource representation'
+      title: User Resource
+      description: User resource representation
       properties:
         id:
-          description: 'ID of the user'
+          description: ID of the user
           type: integer
-          example: '1'
+          example: 1
         firstname:
-          description: 'First name of the user'
+          description: First name of the user
           type: string
           example: John
         lastname:
-          description: 'Last name of the user'
+          description: Last name of the user
           type: string
           example: Doe
         email:
-          description: 'Email address of the user'
+          description: Email address of the user
           type: string
           format: email
           example: john.doe@example.com
