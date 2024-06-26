@@ -16,7 +16,7 @@
 <ul>
     <li><strong>Backend:</strong> Laravel</li>
     <li><strong>Frontend:</strong> Angular</li>
-    <li><strong>Autenticación:</strong> JWT (JSON Web Tokens)</li>
+    <li><strong>Autenticación:</strong> Auth Sanctum</li>
     <li><strong>Base de Datos:</strong> MySQL</li>
     <li><strong>Documentación de API:</strong> Swagger</li>
 </ul>
