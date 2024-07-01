@@ -3,18 +3,16 @@ namespace App\Repository\Contact;
 
 use App\Interfaces\Contact\ContactInterface;
 use App\Models\Contact;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Http\Request;
-
-
+use Illuminate\Support\Facades\Auth;
 
 class ContactRepository implements ContactInterface
 {
 
     public function index()
     {
-        $user = Auth::guard('sanctum')->user();
+        $user = auth()->user();
         $contacts = Contact::where(['user_id' => $user->id])->get();
         foreach ($contacts as $contact) {
             $contact->encrypted_id = Crypt::encrypt($contact->id);
@@ -25,13 +23,13 @@ class ContactRepository implements ContactInterface
     public function store(Request $request)
     {
 
-        $userID = Auth::guard('sanctum')->user()->id;
+        $user = auth()->user();
 
         Contact::create([
             'name' => $request->name,
             'phone' => $request->phone,
             'nickname' => $request->has('nickname') ? $request->nickname : null,
-            'user_id' => $userID
+            'user_id' => $user->id
         ]);
 
     }

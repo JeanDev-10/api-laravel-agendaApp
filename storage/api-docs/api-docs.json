@@ -146,7 +146,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Login successsful",
+                        "description": "Login successful",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -619,7 +619,7 @@
                         "description": "ID of the contact",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -754,7 +754,7 @@
                         "description": "ID of the contact",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -1305,53 +1305,6 @@
                         "description": "Password for the account",
                         "type": "string",
                         "example": "secret123"
-                    }
-                },
-                "type": "object"
-            },
-            "ContactRegisterRequest": {
-                "title": "Contact Register Request",
-                "description": "Request body for creating a new contact",
-                "required": [
-                    "name",
-                    "phone"
-                ],
-                "properties": {
-                    "name": {
-                        "description": "Contact name",
-                        "type": "string",
-                        "example": "John Doe"
-                    },
-                    "phone": {
-                        "description": "Contact phone number",
-                        "type": "string",
-                        "example": "123456789"
-                    },
-                    "nickname": {
-                        "description": "Nickame phone",
-                        "type": "string",
-                        "example": "Jhon3"
-                    }
-                },
-                "type": "object"
-            },
-            "ContactUpdateRegisterRequest": {
-                "title": "Contact Update Request",
-                "description": "Request body for updating a contact",
-                "required": [
-                    "name",
-                    "phone"
-                ],
-                "properties": {
-                    "name": {
-                        "description": "Contact name",
-                        "type": "string",
-                        "example": "John Doe"
-                    },
-                    "phone": {
-                        "description": "Contact phone number",
-                        "type": "string",
-                        "example": "123456789"
                     }
                 },
                 "type": "object"
