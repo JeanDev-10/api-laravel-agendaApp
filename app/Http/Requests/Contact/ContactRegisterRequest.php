@@ -8,35 +8,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\Rule;
-use Auth;
 
-/**
- * @OA\Schema(
- *     schema="ContactRegisterRequest",
- *     type="object",
- *     title="Contact Register Request",
- *     description="Request body for creating a new contact",
- *     required={"name", "phone"},
- *     @OA\Property(
- *         property="name",
- *         type="string",
- *         description="Contact name",
- *         example="John Doe"
- *     ),
- *     @OA\Property(
- *         property="phone",
- *         type="string",
- *         description="Contact phone number",
- *         example="123456789"
- *     ),
- *     @OA\Property(
- *         property="nickname",
- *         type="string",
- *         description="Nickame phone",
- *         example="Jhon3"
- *     )
- * )
- */
 class ContactRegisterRequest extends FormRequest
 {
     /**

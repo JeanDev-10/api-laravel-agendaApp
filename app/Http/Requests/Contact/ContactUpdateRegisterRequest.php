@@ -11,27 +11,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Crypt;
 
 
-/**
- * @OA\Schema(
- *     schema="ContactUpdateRegisterRequest",
- *     type="object",
- *     title="Contact Update Request",
- *     description="Request body for updating a contact",
- *     required={"name", "phone"},
- *     @OA\Property(
- *         property="name",
- *         type="string",
- *         description="Contact name",
- *         example="John Doe"
- *     ),
- *     @OA\Property(
- *         property="phone",
- *         type="string",
- *         description="Contact phone number",
- *         example="123456789"
- *     )
- * )
- */
+
 
 class ContactUpdateRegisterRequest extends FormRequest
 {
