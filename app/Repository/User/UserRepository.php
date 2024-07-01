@@ -4,12 +4,11 @@ use App\Http\Responses\ApiResponses;
 use App\Interfaces\User\UserInterface;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 class UserRepository implements UserInterface{
     public function changePassword(Request $request){
-        $id = Auth::guard('sanctum')->user()->id;
-        $user = User::where("id", "=", $id)->first();
+        $user_id = auth()->user()->id;
+        $user = User::where("id", "=", $user_id)->first();
             if(Hash::check($request->password, $user->password)){
                 $encryptedPassword=Hash::make($request->new_password);
                 if(Hash::check($request->password, $encryptedPassword)){
@@ -23,8 +22,8 @@ class UserRepository implements UserInterface{
             }
     }
     public function CheckThePassword(Request $request){
-        $id = Auth::guard('sanctum')->user()->id;
-        $user = User::where("id", "=", $id)->first();
+        $user_id = auth()->user()->id;
+        $user = User::where("id", "=", $user_id)->first();
             if(Hash::check($request->password, $user->password)){
                 return ApiResponses::successs("Contraseña correcta!", 200);
             }else{
@@ -32,8 +31,8 @@ class UserRepository implements UserInterface{
             }
     }
     public function editProfile(Request $request){
-        $id = Auth::guard('sanctum')->user()->id;
-        $user = User::where("id", "=", $id)->first();
+        $user_id = auth()->user()->id;
+        $user = User::where("id", "=", $user_id)->first();
         if ($request->firstName === $user->firstname && $request->lastName === $user->lastname) {
             return ApiResponses::successs("No hay cambios, perfil no fue actualizado", 200,["message"=>"No hay cambios, perfil no fue actualizado"]);
         }

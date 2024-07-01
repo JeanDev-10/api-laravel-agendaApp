@@ -62,7 +62,7 @@ class ContactRegisterRequest extends FormRequest
                 'min:10',
                 'max:10',
                 Rule::unique('contacts')->where(function ($query) {
-                    return $query->where('user_id', Auth::guard('sanctum')->user()->id)->whereNull('deleted_at');
+                    return $query->where('user_id', auth()->user()->id)->whereNull('deleted_at');
                 }),
             ],
             'nickname' => 'nullable|string|min:3|max:255'

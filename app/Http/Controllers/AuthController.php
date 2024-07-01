@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 use App\Http\Responses\ApiResponses;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 /**
  * @OA\Info(
@@ -135,6 +136,13 @@ class AuthController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
+     *         description="Token not created",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="No se pudo crear el token"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
      *         description="Internal server error",
      *         @OA\JsonContent(
      *             @OA\Property(property="message", type="string", example="Ha ocurrido un error: {error_message}")
@@ -151,43 +159,44 @@ class AuthController extends Controller
             return ApiResponses::error("Error de validación", 422, $errors);
         } catch (ModelNotFoundException) {
             return ApiResponses::error("No existe ese registro", 404);
+        } catch (JWTException $e) {
+            return response()->json(['error' => 'No se pudo crear el token'], 500);
         } catch (Exception $e) {
             return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
         }
-
     }
- /**
- * @OA\Get(
- *     path="/auth/profile",
- *     summary="Get user profile",
- *     description="Endpoint to get user profile information",
- *     operationId="userProfile",
- *     tags={"Auth"},
- *     security={ {"bearerAuth": {} } },
- *     @OA\Response(
- *         response=200,
- *         description="successsful operation",
- *         @OA\JsonContent(
- *             @OA\Property(property="message", type="string", example="Perfil de usuario"),
- *             @OA\Property(property="data", ref="#/components/schemas/UserResource")
- *         )
- *     ),
- *     @OA\Response(
- *         response=401,
- *         description="Unauthenticated",
- *         @OA\JsonContent(
- *             @OA\Property(property="message", type="string", example="Unauthenticated.")
- *         )
- *     ),
- *     @OA\Response(
- *         response=500,
- *         description="Internal server error",
- *         @OA\JsonContent(
- *             @OA\Property(property="message", type="string", example="Ha ocurrido un error: {error_message}")
- *         )
- *     )
- * )
- */
+    /**
+     * @OA\Get(
+     *     path="/auth/profile",
+     *     summary="Get user profile",
+     *     description="Endpoint to get user profile information",
+     *     operationId="userProfile",
+     *     tags={"Auth"},
+     *     security={ {"bearerAuth": {} } },
+     *     @OA\Response(
+     *         response=200,
+     *         description="successsful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Perfil de usuario"),
+     *             @OA\Property(property="data", ref="#/components/schemas/UserResource")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Ha ocurrido un error: {error_message}")
+     *         )
+     *     )
+     * )
+     */
     public function userProfile()
     {
         try {
@@ -196,9 +205,8 @@ class AuthController extends Controller
         } catch (Exception $e) {
             return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
         }
-
     }
-/**
+    /**
      * @OA\Post(
      *     path="/auth/logout",
      *     summary="Logout a user",

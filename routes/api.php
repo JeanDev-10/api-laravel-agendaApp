@@ -22,7 +22,7 @@ Route::controller(AuthController::class)->group(function () {
 
 
 
-Route::group(['middleware' => ["auth:sanctum"]], function () {
+Route::group(['middleware' => ["auth:api"]], function () {
     //auth metodos
     Route::controller(AuthController::class)->group(function () {
         Route::get('auth/profile', 'userProfile');
