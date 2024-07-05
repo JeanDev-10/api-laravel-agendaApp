@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\contact\ContactResource;
-use App\Repository\Auth\AuthRepository;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
@@ -17,12 +16,10 @@ use Exception;
 class ContactController extends Controller
 {
     private ContactRepository $contactRepository;
-    private AuthRepository $authRepository;
 
-    public function __construct(ContactRepository $contactRepository, AuthRepository $authRepository)
+    public function __construct(ContactRepository $contactRepository)
     {
         $this->contactRepository = $contactRepository;
-        $this->authRepository = $authRepository;
     }
 
 /**
@@ -243,11 +240,7 @@ class ContactController extends Controller
     {
         try {
             $contact = $this->contactRepository->show($id);
-            $user = $this->authRepository->userProfile();
-
-            if (!($contact->user_id == $user->id)) {
-                throw new AuthorizationException();
-            }
+            $this->authorize('update', $contact);
             unset($contact['encrypted_id']);
             $this->contactRepository->update($contact, $request);
 
@@ -315,12 +308,7 @@ class ContactController extends Controller
     {
         try {
             $contact = $this->contactRepository->show($id);
-            $user = $this->authRepository->userProfile();
-
-            if (!($contact->user_id == $user->id)) {
-                throw new AuthorizationException();
-            }
-
+            $this->authorize('delete', $contact);
             $this->contactRepository->delete($contact);
 
             return ApiResponses::successs('Se borró correctamente el contacto.', 200);
