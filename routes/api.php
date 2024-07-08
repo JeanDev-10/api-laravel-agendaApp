@@ -49,6 +49,7 @@ Route::group(['middleware' => ["auth:api"]], function () {
         Route::post('contact', 'store');
         Route::get('contact/{id}', 'show');
         Route::put('contact/{id}', 'update');
+        Route::post('contact/restore', 'restoreContacts');
         Route::delete('contact/{id}', 'destroy');
     });
 

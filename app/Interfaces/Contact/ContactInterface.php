@@ -10,4 +10,5 @@ interface ContactInterface{
     public function show($id);
     public function update(Contact $contacto,Request $request);
     public function delete(Contact $contacto);
+    public function restoreContacts();
 }
