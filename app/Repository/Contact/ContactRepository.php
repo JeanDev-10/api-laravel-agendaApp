@@ -6,6 +6,7 @@ use App\Models\Contact;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ContactRepository implements ContactInterface
 {
@@ -37,7 +38,7 @@ class ContactRepository implements ContactInterface
     public function show($idEncrypted)
     {
 
-        $contact = Contact::where(['id' => Crypt::decrypt($idEncrypted)])->firstOrFail();
+        $contact = Contact::with('Favoritos')->where(['id' => Crypt::decrypt($idEncrypted)])->firstOrFail();
         $contact->encrypted_id = Crypt::encrypt($contact->id);
         return $contact;
     }
@@ -55,5 +56,37 @@ class ContactRepository implements ContactInterface
     public function delete(Contact $contacto)
     {
         $contacto->delete();
+        $contacto->favoritos()->delete();
+    }
+    public function restoreContacts()
+    {
+        $userId = auth()->id();
+
+        // Obtener todos los contactos eliminados del usuario logeado
+        $deletedContacts = Contact::onlyTrashed()
+            ->where('user_id', $userId)
+            ->get();
+         // Obtener todos los contactos eliminados
+
+    $messages = [];
+
+    foreach ($deletedContacts as $contact) {
+        // Verificar si existe otro contacto activo con el mismo número
+        $existingContact = Contact::where('phone', $contact->phone) ->where('user_id', '<>', $userId)->exists();
+
+        if ($existingContact) {
+            // Lógica para manejar la existencia de un contacto activo con el mismo número
+            $messages[] = "Ya existe un contacto activo con el número " . $contact->phone . "-".$contact->name. ". No se ha restaurado.";
+        } else {
+            // Restaurar el contacto eliminado
+            DB::transaction(function () use ($contact) {
+                $contact->restore();
+            });
+
+            $messages[] = "Contacto con número " . $contact->phone . " restaurado correctamente.";
+        }
+    }
+
+    return $messages;
     }
 }

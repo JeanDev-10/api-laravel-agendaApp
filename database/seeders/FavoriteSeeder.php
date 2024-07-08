@@ -19,7 +19,7 @@ class FavoriteSeeder extends Seeder
                 "contact_id"=>$i
             ]);
         }
-        for ($i=3; $i <=5 ; $i++) {
+        for ($i=4; $i <=5 ; $i++) {
             Favorite::create([
                 "user_id"=>2,
                 "contact_id"=>$i
