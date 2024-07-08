@@ -5,7 +5,10 @@ namespace App\Providers;
 // use Illuminate\Support\Facades\Gate;
 
 use App\Models\Contact;
+use App\Models\Favorite;
 use App\Policies\ContactPolicy;
+use App\Policies\FavoritePolicy;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -25,6 +28,10 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $this->registerPolicies();
+
+        Gate::define('delete', [FavoritePolicy::class, 'delete']);
+        Gate::define('store', [FavoritePolicy::class, 'store']);
+        Gate::define('show', [FavoritePolicy::class, 'show']);
     }
 }

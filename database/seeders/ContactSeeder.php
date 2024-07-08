@@ -32,12 +32,12 @@ class ContactSeeder extends Seeder
             [
                 'name' => 'Yimmito',
                 'phone' => '0985789422',
-                'user_id' => 1
+                'user_id' => 2
             ],
             [
                 'name' => 'Pipo',
                 'phone' => '0985789425',
-                'user_id' => 1
+                'user_id' => 2
             ],
         ]);
     }

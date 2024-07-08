@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContactController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\ContactController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
 Route::controller(AuthController::class)->group(function () {
     Route::post('/auth/register', 'register');
     Route::post('/auth/login', 'login');
@@ -23,18 +25,25 @@ Route::controller(AuthController::class)->group(function () {
 
 
 Route::group(['middleware' => ["auth:api"]], function () {
-    //auth metodos
+    /**
+     * ? Auth Routes
+     */
     Route::controller(AuthController::class)->group(function () {
         Route::get('auth/profile', 'userProfile');
         Route::post('auth/logout', 'logout');
     });
-    //metodos de usuario
+    /**
+     * ? Routes Users
+     */
     Route::controller(UserController::class)->group(function () {
         Route::post('auth/changePassword', 'changePassword');
         Route::post('auth/check-password', 'checkThePassword');
         Route::put('auth/editProfile', 'editProfile');
     });
-    //metodos de contactos
+    /**
+     * ? Routes Contacts
+     */
+
     Route::controller(ContactController::class)->group(function () {
         Route::get('contact', 'index');
         Route::post('contact', 'store');
@@ -42,6 +51,13 @@ Route::group(['middleware' => ["auth:api"]], function () {
         Route::put('contact/{id}', 'update');
         Route::delete('contact/{id}', 'destroy');
     });
+
+    /**
+     * ? Routes Favorites
+     */
+
+    Route::apiResource('favorite',FavoriteController::class)
+        ->only('index', 'store', 'destroy','show');
 });
 
 //auth metodos

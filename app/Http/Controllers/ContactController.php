@@ -168,10 +168,13 @@ class ContactController extends Controller
     {
         try {
             $contact = $this->contactRepository->show($id);
+            $this->authorize('show', $contact);
             return ApiResponses::successs('Mostrando Contacto', 200, new ContactResource($contact));
         } catch (ModelNotFoundException $e) {
             return ApiResponses::error('Contacto no encontrado', 404);
-        } catch (Exception $e) {
+        } catch (AuthorizationException $e) {
+            return ApiResponses::error("No estás autorizado para ver este contacto", 403);
+        }catch (Exception $e) {
             return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
         }
     }
