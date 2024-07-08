@@ -19,7 +19,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
  *             description="Lista de Endspoints"
  * )
  *
- * @OA\Server(url="http://localhost:8000/api/")
+ * @OA\Server(url="http://localhost:8000/api/v1/")
  * @OA\SecurityScheme(
  *     type="http",
  *     description="Token de autenticación",

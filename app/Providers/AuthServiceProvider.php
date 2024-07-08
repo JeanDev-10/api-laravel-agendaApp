@@ -29,7 +29,10 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerPolicies();
+        $this->registerPolicies();
 
+    }
+    protected function PoliciesFavorite(){
         Gate::define('delete', [FavoritePolicy::class, 'delete']);
         Gate::define('store', [FavoritePolicy::class, 'store']);
         Gate::define('show', [FavoritePolicy::class, 'show']);
