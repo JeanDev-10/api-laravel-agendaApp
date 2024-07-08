@@ -831,6 +831,164 @@
                 ]
             }
         },
+        "/favorite": {
+            "get": {
+                "tags": [
+                    "Favorites"
+                ],
+                "summary": "Get all favorite contacts",
+                "description": "Display a listing of the resource.",
+                "operationId": "40cccb9d38c80baf7f3ba8dc2b5bb2aa",
+                "responses": {
+                    "200": {
+                        "description": "List of favorite contacts",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/FavoriteResource"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Favorites"
+                ],
+                "summary": "Store a new favorite contact",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "b61cce84e018fc68a7cab2f6b4e4f236",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FavoriteRegisterRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Favorite contact successfully stored"
+                    },
+                    "400": {
+                        "description": "Validation error"
+                    },
+                    "403": {
+                        "description": "Unauthorized to add this contact to favorites"
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/favorite/{id}": {
+            "get": {
+                "tags": [
+                    "Favorites"
+                ],
+                "summary": "Get a specific favorite contact",
+                "description": "Display the specified resource.",
+                "operationId": "416e3981c88ac49b4ad7dc14c1ee95cf",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the favorite contact",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Favorite contact details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FavoriteResource"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized to view this favorite contact"
+                    },
+                    "404": {
+                        "description": "Favorite contact not found"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Favorites"
+                ],
+                "summary": "Delete a favorite contact",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "06116edc294233058da35c225b1de436",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the favorite contact",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Favorite contact successfully deleted"
+                    },
+                    "403": {
+                        "description": "Unauthorized to delete this favorite contact"
+                    },
+                    "404": {
+                        "description": "Favorite contact not found"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/auth/changePassword": {
             "post": {
                 "tags": [
@@ -1309,6 +1467,13 @@
                 },
                 "type": "object"
             },
+            "FavoriteRegisterRequest": {
+                "title": "FavoriteRegisterRequest",
+                "description": "Request schema for registering a favorite contact",
+                "required": [
+                    "contact_id"
+                ]
+            },
             "ContactResource": {
                 "title": "Contact Resource",
                 "description": "Contact resource representation",
@@ -1332,6 +1497,45 @@
                         "description": "Nickname of the contact",
                         "type": "string",
                         "example": "Johnny"
+                    }
+                },
+                "type": "object"
+            },
+            "FavoriteResource": {
+                "title": "Favorite Resource",
+                "description": "Favorite resource representation",
+                "properties": {
+                    "id": {
+                        "description": "ID of the favorite (encrypted)",
+                        "type": "string",
+                        "example": "eyJpdiI6IjZkZ3BMRnl2Nlducmd4RWlCNDAxZkE9PSIsInZhbHVlIjoianpyOEorMWdwcmlRaWJPcUtlcFd0QT09IiwibWFjIjoiNTE2MTkxZDA0YTgyNTI1OTkwN2IxMjJlMmM1ZjNhZTQwYjNlYjIxOTBhNTI2NDcwMDM2YjkwYWY0YjVmNzYwOCIsInRhZyI6IiJ9"
+                    },
+                    "contact": {
+                        "title": "Contact details",
+                        "description": "Details of the contact that was favorited",
+                        "properties": {
+                            "id": {
+                                "description": "ID of the contact (encrypted)",
+                                "type": "string",
+                                "example": "eyJpdiI6Im53enBpS0xGZjF6VFUyaG1aQ2E3UFE9PSIsInZhbHVlIjoiaVJDdHZrZitLZ09HQ2YxMm84OUYvUT09IiwibWFjIjoiYmM2YzdlNjI1MjA4NjViOWJiYmIwMDBhN2U3ZjYyOGFmNzM3ZGY4YzJkZDI2ZjViYTY1NDkxNGIzY2I2YTM2YyIsInRhZyI6IiJ9"
+                            },
+                            "name": {
+                                "description": "Name of the contact",
+                                "type": "string",
+                                "example": "Juanito"
+                            },
+                            "phone": {
+                                "description": "Phone number of the contact",
+                                "type": "string",
+                                "example": "0993954831"
+                            },
+                            "nickname": {
+                                "description": "Nickname of the contact",
+                                "type": "string",
+                                "example": null
+                            }
+                        },
+                        "type": "object"
                     }
                 },
                 "type": "object"
