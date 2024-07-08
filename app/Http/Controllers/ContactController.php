@@ -335,6 +335,7 @@ class ContactController extends Controller
  * @OA\Post(
  *     path="/contacts/restore",
  *     summary="Restore deleted contacts",
+ *     security={ {"bearerAuth": {} } },
  *     tags={"Contacts"},
  *     @OA\Response(
  *         response=200,

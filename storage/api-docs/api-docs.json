@@ -7,7 +7,7 @@
     },
     "servers": [
         {
-            "url": "http://localhost:8000/api/"
+            "url": "http://localhost:8000/api/v1/"
         }
     ],
     "paths": {
@@ -894,7 +894,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/favorite": {
@@ -1540,6 +1545,44 @@
                     "contact_id"
                 ]
             },
+            "ContactOneResource": {
+                "title": "ContactOne Resource",
+                "description": "ContactOne resource representation",
+                "properties": {
+                    "id": {
+                        "description": "Encrypted ID of the contact",
+                        "type": "string",
+                        "example": "eyJpdiI6IjZkZ3BMRnl2Nlducmd4RWlCNDAxZkE9PSIsInZhbHVlIjoianpyOEorMWdwcmlRaWJPcUtlcFd0QT09IiwibWFjIjoiNTE2MTkxZDA0YTgyNTI1OTkwN2IxMjJlMmM1ZjNhZTQwYjNlYjIxOTBhNTI2NDcwMDM2YjkwYWY0YjVmNzYwOCIsInRhZyI6IiJ9"
+                    },
+                    "name": {
+                        "description": "Name of the contact",
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "phone": {
+                        "description": "Phone number of the contact",
+                        "type": "string",
+                        "example": "123456789"
+                    },
+                    "nickname": {
+                        "description": "Nickname of the contact",
+                        "type": "string",
+                        "example": "Johnny"
+                    },
+                    "favoritos": {
+                        "description": "Favorite contact details",
+                        "properties": {
+                            "id": {
+                                "description": "ID of the favorite contact",
+                                "type": "integer",
+                                "example": 5
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
             "ContactResource": {
                 "title": "Contact Resource",
                 "description": "Contact resource representation",
@@ -1645,5 +1688,23 @@
                 "scheme": "bearer"
             }
         }
-    }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Auth"
+        },
+        {
+            "name": "Contacts",
+            "description": "Contacts"
+        },
+        {
+            "name": "Favorites",
+            "description": "Favorites"
+        },
+        {
+            "name": "User",
+            "description": "User"
+        }
+    ]
 }
