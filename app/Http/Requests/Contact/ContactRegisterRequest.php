@@ -33,6 +33,7 @@ class ContactRegisterRequest extends FormRequest
                 'string',
                 'min:10',
                 'max:10',
+                'regex:/^[0-9]+$/',
                 Rule::unique('contacts')->where(function ($query) {
                     return $query->where('user_id', auth()->user()->id)->whereNull('deleted_at');
                 }),

@@ -25,16 +25,16 @@ class Authenticate extends Middleware
         try {
             $user = JWTAuth::parseToken()->authenticate();
             if (!$user) {
-                return response()->json(['message' => 'No autenticado'], 401);
+                return ApiResponses::error('No autenticado', 401);
             }
         } catch (TokenExpiredException $e) {
-            return response()->json(['message' => 'Token expirado'], 401);
+            return ApiResponses::error('Token expirado', 401);
         } catch (TokenInvalidException $e) {
-            return response()->json(['message' => 'Token inválido'], 401);
+            return ApiResponses::error('Token invalido', 401);
         } catch (JWTException $e) {
-            return response()->json(['message' => 'No autenticado'], 401);
+            return ApiResponses::error('No autenticado', 401);
         }
-
+        
         return $next($request);
     }
 }
