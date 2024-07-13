@@ -42,6 +42,7 @@ class ContactUpdateRegisterRequest extends FormRequest
                 'string',
                 'min:10',
                 'max:10',
+                'regex:/^[0-9]+$/', // Agregamos la regla regex para validar solo números
                 Rule::unique('contacts')
                     ->where(function ($query) use ($userId) {
                         return $query->where('user_id', $userId)->whereNull('deleted_at');
