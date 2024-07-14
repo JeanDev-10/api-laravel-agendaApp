@@ -349,66 +349,6 @@
             }
         },
         "/contact": {
-            "get": {
-                "tags": [
-                    "Contacts"
-                ],
-                "summary": "Get list of contacts",
-                "description": "Returns a list of contacts for a user.",
-                "operationId": "be5734b06f413963e908d91b37a45688",
-                "responses": {
-                    "200": {
-                        "description": "List of contacts.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/ContactResource"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Unauthenticated."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Ha ocurrido un error: {error_message}"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
             "post": {
                 "tags": [
                     "Contacts"
@@ -849,12 +789,6 @@
                                         "message": {
                                             "type": "string",
                                             "example": "Se restauró correctamente los contactos."
-                                        },
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/ContactResource"
-                                            }
                                         }
                                     },
                                     "type": "object"
@@ -1583,33 +1517,6 @@
                 },
                 "type": "object"
             },
-            "ContactResource": {
-                "title": "Contact Resource",
-                "description": "Contact resource representation",
-                "properties": {
-                    "id": {
-                        "description": "Id of the contact (encrypted)",
-                        "type": "integer",
-                        "example": "1"
-                    },
-                    "name": {
-                        "description": "Name of the contact",
-                        "type": "string",
-                        "example": "John Doe"
-                    },
-                    "phone": {
-                        "description": "Phone number of the contact",
-                        "type": "string",
-                        "example": "123456789"
-                    },
-                    "nickname": {
-                        "description": "Nickname of the contact",
-                        "type": "string",
-                        "example": "Johnny"
-                    }
-                },
-                "type": "object"
-            },
             "FavoriteResource": {
                 "title": "Favorite Resource",
                 "description": "Favorite resource representation",
@@ -1688,23 +1595,5 @@
                 "scheme": "bearer"
             }
         }
-    },
-    "tags": [
-        {
-            "name": "Auth",
-            "description": "Auth"
-        },
-        {
-            "name": "Contacts",
-            "description": "Contacts"
-        },
-        {
-            "name": "Favorites",
-            "description": "Favorites"
-        },
-        {
-            "name": "User",
-            "description": "User"
-        }
-    ]
+    }
 }

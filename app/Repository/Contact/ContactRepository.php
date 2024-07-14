@@ -14,7 +14,7 @@ class ContactRepository implements ContactInterface
     public function index()
     {
         $user = auth()->user();
-        $contacts = Contact::where(['user_id' => $user->id])->get();
+        $contacts = Contact::where(['user_id' => $user->id])->paginate(10);
         foreach ($contacts as $contact) {
             $contact->encrypted_id = Crypt::encrypt($contact->id);
         }

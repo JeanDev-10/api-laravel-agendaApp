@@ -31,7 +31,6 @@ use Tymon\JWTAuth\Exceptions\JWTException;
  * )
  */
 
-
 class AuthController extends Controller
 {
 

@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Favorite;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class FavoriteSeeder extends Seeder
@@ -13,13 +12,13 @@ class FavoriteSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($i=1; $i <=3 ; $i++) {
+        for ($i=1; $i <=25 ; $i++) {
             Favorite::create([
                 "user_id"=>1,
                 "contact_id"=>$i
             ]);
         }
-        for ($i=4; $i <=5 ; $i++) {
+        for ($i=26; $i <=50 ; $i++) {
             Favorite::create([
                 "user_id"=>2,
                 "contact_id"=>$i
