@@ -24,7 +24,92 @@ class ContactController extends Controller
         $this->contactRepository = $contactRepository;
     }
 
-
+ /**
+     * @OA\Get(
+     *     path="/contact",
+     *     summary="Obtiene la lista de contactos del usuario autenticado",
+     *     tags={"Contacts"},
+     *     @OA\Parameter(
+     *         name="name",
+     *         in="query",
+     *         description="Filtro por nombre del contacto",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="phone",
+     *         in="query",
+     *         description="Filtro por número de teléfono del contacto",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="nickname",
+     *         in="query",
+     *         description="Filtro por apodo del contacto",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="orderBy",
+     *         in="query",
+     *         description="Campo por el cual se desea ordenar (id, name, phone, nickname)",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             default="id"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="order",
+     *         in="query",
+     *         description="Orden de la clasificación (asc, desc)",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             default="asc"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de contactos obtenida exitosamente",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/ContactResource")
+     *             ),
+     *             @OA\Property(
+     *                 property="meta",
+     *                 ref="#/components/schemas/PaginationMeta"
+     *             ),
+     *             @OA\Property(
+     *                 property="links",
+     *                 ref="#/components/schemas/PaginationLinks"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error al obtener la lista de contactos",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Ha ocurrido un error: [detalles del error]"
+     *             )
+     *         )
+     *     )
+     * )
+     */
     public function index(Request $request)
     {
         try {
@@ -293,7 +378,7 @@ class ContactController extends Controller
      * @return \Illuminate\Http\JsonResponse
      *
      * @OA\Post(
-     *     path="/contacts/restore",
+     *     path="/contact/restore",
      *     summary="Restore deleted contacts",
      *     security={ {"bearerAuth": {} } },
      *     tags={"Contacts"},

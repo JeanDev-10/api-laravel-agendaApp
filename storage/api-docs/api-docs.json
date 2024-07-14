@@ -349,6 +349,104 @@
             }
         },
         "/contact": {
+            "get": {
+                "tags": [
+                    "Contacts"
+                ],
+                "summary": "Obtiene la lista de contactos del usuario autenticado",
+                "operationId": "be5734b06f413963e908d91b37a45688",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Filtro por nombre del contacto",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "phone",
+                        "in": "query",
+                        "description": "Filtro por número de teléfono del contacto",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "nickname",
+                        "in": "query",
+                        "description": "Filtro por apodo del contacto",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "orderBy",
+                        "in": "query",
+                        "description": "Campo por el cual se desea ordenar (id, name, phone, nickname)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "id"
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "Orden de la clasificación (asc, desc)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "asc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de contactos obtenida exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ContactResource"
+                                            }
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationMeta"
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/PaginationLinks"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error al obtener la lista de contactos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ha ocurrido un error: [detalles del error]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "Contacts"
@@ -723,14 +821,14 @@
                 ]
             }
         },
-        "/contacts/restore": {
+        "/contact/restore": {
             "post": {
                 "tags": [
                     "Contacts"
                 ],
                 "summary": "Restore deleted contacts",
                 "description": "Restore deleted contacts for the logged-in user.",
-                "operationId": "f8c464617a82f4a3a824d4e7e7b6720e",
+                "operationId": "eba13bc607f3738a290515197ef20af2",
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -789,12 +887,89 @@
             }
         },
         "/favorite": {
+            "get": {
+                "tags": [
+                    "Favorites"
+                ],
+                "summary": "Obtiene la lista de favoritos del usuario autenticado",
+                "operationId": "40cccb9d38c80baf7f3ba8dc2b5bb2aa",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Filtro por nombre del contacto",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "phone",
+                        "in": "query",
+                        "description": "Filtro por número de teléfono del contacto",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "nickname",
+                        "in": "query",
+                        "description": "Filtro por apodo del contacto",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de favoritos obtenida exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/FavoriteResource"
+                                            }
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationMeta"
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/PaginationLinks"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error al obtener la lista de favoritos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ha ocurrido un error: [detalles del error]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "Favorites"
                 ],
                 "summary": "Store a new favorite contact",
-                "description": "Store a newly created resource in storage.",
                 "operationId": "b61cce84e018fc68a7cab2f6b4e4f236",
                 "requestBody": {
                     "required": true,
@@ -808,19 +983,87 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Favorite contact successfully stored"
+                        "description": "Favorite contact successfully stored",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Se ha creado añadido exitosamente el contacto a favoritos"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
-                    "400": {
-                        "description": "Validation error"
-                    },
-                    "403": {
-                        "description": "Unauthorized to add this contact to favorites"
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error de validación"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "404": {
-                        "description": "Resource not found"
+                        "description": "Resource not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "El recurso solicitado no existe"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized to add this contact to favorites",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No estás autorizado para añadir este contacto a favoritos"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "500": {
-                        "description": "Server error"
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ha ocurrido un error: [detalles del error]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -835,8 +1078,7 @@
                 "tags": [
                     "Favorites"
                 ],
-                "summary": "Get a specific favorite contact",
-                "description": "Display the specified resource.",
+                "summary": "Show a favorite contact",
                 "operationId": "416e3981c88ac49b4ad7dc14c1ee95cf",
                 "parameters": [
                     {
@@ -851,7 +1093,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Favorite contact details",
+                        "description": "Favorite contact found",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -860,14 +1102,53 @@
                             }
                         }
                     },
-                    "403": {
-                        "description": "Unauthorized to view this favorite contact"
-                    },
                     "404": {
-                        "description": "Favorite contact not found"
+                        "description": "Favorite contact not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No se ha encontrado el contacto favorito"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized to view this favorite contact",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No estás autorizado para ver este contacto favorito"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "500": {
-                        "description": "Server error"
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ha ocurrido un error: [detalles del error]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -875,19 +1156,20 @@
                         "bearerAuth": []
                     }
                 ]
-            },
+            }
+        },
+        "/api/favorite/{id}": {
             "delete": {
                 "tags": [
                     "Favorites"
                 ],
                 "summary": "Delete a favorite contact",
-                "description": "Remove the specified resource from storage.",
-                "operationId": "06116edc294233058da35c225b1de436",
+                "operationId": "1a83276ced9917dd0a6dca0470204c50",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID of the favorite contact",
+                        "description": "ID of the favorite contact to delete",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -896,16 +1178,68 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Favorite contact successfully deleted"
-                    },
-                    "403": {
-                        "description": "Unauthorized to delete this favorite contact"
+                        "description": "Favorite contact deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Contacto favorito Eliminado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "404": {
-                        "description": "Favorite contact not found"
+                        "description": "Favorite contact not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No se ha encontrado el contacto favorito"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized to delete this favorite contact",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No estás autorizado para elimiinar este contacto favorito"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "500": {
-                        "description": "Server error"
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ha ocurrido un error: [detalles del error]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1496,6 +1830,40 @@
                 },
                 "type": "object"
             },
+            "ContactResource": {
+                "title": "Contact Resource",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "encrypted_id"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "1234567890"
+                    },
+                    "nickname": {
+                        "type": "string",
+                        "example": "Johnny"
+                    },
+                    "favoritos": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 1
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
             "FavoriteResource": {
                 "title": "Favorite Resource",
                 "description": "Favorite resource representation",
@@ -1535,6 +1903,39 @@
                 },
                 "type": "object"
             },
+            "PaginationMeta": {
+                "properties": {
+                    "current_page": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "from": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "last_page": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "path": {
+                        "type": "string",
+                        "example": "http://localhost/api/contacts"
+                    },
+                    "per_page": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "to": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "total": {
+                        "type": "integer",
+                        "example": 100
+                    }
+                },
+                "type": "object"
+            },
             "UserResource": {
                 "title": "User Resource",
                 "description": "User resource representation",
@@ -1559,6 +1960,29 @@
                         "type": "string",
                         "format": "email",
                         "example": "john.doe@example.com"
+                    }
+                },
+                "type": "object"
+            },
+            "PaginationLinks": {
+                "properties": {
+                    "first": {
+                        "type": "string",
+                        "example": "http://localhost/api/contacts?page=1"
+                    },
+                    "last": {
+                        "type": "string",
+                        "example": "http://localhost/api/contacts?page=10"
+                    },
+                    "prev": {
+                        "type": "string",
+                        "example": null,
+                        "nullable": true
+                    },
+                    "next": {
+                        "type": "string",
+                        "example": "http://localhost/api/contacts?page=2",
+                        "nullable": true
                     }
                 },
                 "type": "object"
