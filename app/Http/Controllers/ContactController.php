@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\contact\ContactResource;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
@@ -11,8 +10,10 @@ use App\Http\Responses\ApiResponses;
 use App\Http\Requests\Contact\ContactRegisterRequest;
 use App\Http\Requests\Contact\ContactUpdateRegisterRequest;
 use App\Http\Resources\contact\ContactOneResource;
+use App\Http\Resources\paginate\PaginateResource;
 use App\Repository\Contact\ContactRepository;
 use Exception;
+use Illuminate\Http\Request;
 
 class ContactController extends Controller
 {
@@ -23,42 +24,100 @@ class ContactController extends Controller
         $this->contactRepository = $contactRepository;
     }
 
-    /**
+ /**
      * @OA\Get(
      *     path="/contact",
-     *     summary="Get list of contacts",
-     *     description="Returns a list of contacts for a user.",
+     *     summary="Obtiene la lista de contactos del usuario autenticado",
      *     tags={"Contacts"},
-     *     security={ {"bearerAuth": {} } },
+     *     @OA\Parameter(
+     *         name="name",
+     *         in="query",
+     *         description="Filtro por nombre del contacto",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="phone",
+     *         in="query",
+     *         description="Filtro por número de teléfono del contacto",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="nickname",
+     *         in="query",
+     *         description="Filtro por apodo del contacto",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="orderBy",
+     *         in="query",
+     *         description="Campo por el cual se desea ordenar (id, name, phone, nickname)",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             default="id"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="order",
+     *         in="query",
+     *         description="Orden de la clasificación (asc, desc)",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             default="asc"
+     *         )
+     *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="List of contacts.",
+     *         description="Lista de contactos obtenida exitosamente",
      *         @OA\JsonContent(
-     *             type="array",
-     *             @OA\Items(ref="App\Http\Resources\contact\ContactResource")
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/ContactResource")
+     *             ),
+     *             @OA\Property(
+     *                 property="meta",
+     *                 ref="#/components/schemas/PaginationMeta"
+     *             ),
+     *             @OA\Property(
+     *                 property="links",
+     *                 ref="#/components/schemas/PaginationLinks"
+     *             )
      *         )
      *     ),
      *     @OA\Response(
-     *         response=401,
-     *         description="Unauthenticated",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
-     *         )
-     *     ),
-     *         @OA\Response(
      *         response=500,
-     *         description="Internal server error",
+     *         description="Error al obtener la lista de contactos",
      *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Ha ocurrido un error: {error_message}")
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Ha ocurrido un error: [detalles del error]"
+     *             )
      *         )
      *     )
      * )
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $contacts = $this->contactRepository->index();
-            return ApiResponses::successs('Lista de contactos de un usuario.', 200, ContactResource::collection($contacts));
+            $filters = $request->only(['name', 'phone', 'nickname']);
+            $orderBy = $request->query('orderBy', 'id');
+            $order = $request->query('order', 'asc');
+            $contacts = $this->contactRepository->index($filters, $orderBy, $order);
+            return ApiResponses::successs('Lista de contactos de un usuario.', 200, new PaginateResource($contacts));
         } catch (Exception $e) {
             return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
         }
@@ -72,12 +131,9 @@ class ContactController extends Controller
      *     tags={"Contacts"},
      *     security={ {"bearerAuth": {} } },
      *     @OA\RequestBody(
-     *     required=true,
-     *     @OA\JsonContent(
-     *             required={"name", "phone"},
-     *             @OA\Property(property="name", type="string", example="John"),
-     *             @OA\Property(property="phone", nullable=true ,type="string", example="0993854921"),
-     *         ),
+     *         required=true,
+     *         description="Datos del contacto a registrar",
+     *         @OA\JsonContent(ref="#/components/schemas/ContactRegisterRequest"),
      *     ),
      *     @OA\Response(
      *         response=201,
@@ -171,7 +227,7 @@ class ContactController extends Controller
             $contact = $this->contactRepository->show($id);
             $this->authorize('show', $contact);
             /* return ApiResponses::successs('Mostrando Contacto', 200, $contact); */
-             return ApiResponses::successs('Mostrando Contacto', 200, new ContactOneResource($contact));
+            return ApiResponses::successs('Mostrando Contacto', 200, new ContactOneResource($contact));
         } catch (ModelNotFoundException $e) {
             return ApiResponses::error('Contacto no encontrado', 404);
         } catch (AuthorizationException $e) {
@@ -197,19 +253,8 @@ class ContactController extends Controller
      *     ),
      *     @OA\RequestBody(
      *         required=true,
-     *     @OA\JsonContent(
-     *             required={"name", "phone"},
-     *             @OA\Property(property="name", type="string", example="John"),
-     *             @OA\Property(property="phone" ,type="string", example="0993854921"),
-     *             @OA\Property(property="nickname" ,type="string", nullable=true ,example="Jhon123"),
-     *         ),
-     *     ),
-     *     @OA\Response(
-     *         response=202,
-     *         description="Contact updated successsfully.",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Contacto actualizado exitosamente.")
-     *         )
+     *         description="Datos del contacto a actualizar",
+     *         @OA\JsonContent(ref="#/components/schemas/ContactUpdateRegisterRequest"),
      *     ),
      *     @OA\Response(
      *         response=404,
@@ -327,67 +372,62 @@ class ContactController extends Controller
     }
 
 
-/**
- * Restore deleted contacts for the logged-in user.
- *
- * @return \Illuminate\Http\JsonResponse
- *
- * @OA\Post(
- *     path="/contacts/restore",
- *     summary="Restore deleted contacts",
- *     security={ {"bearerAuth": {} } },
- *     tags={"Contacts"},
- *     @OA\Response(
- *         response=200,
- *         description="Successful operation",
- *         @OA\JsonContent(
- *             type="object",
- *             @OA\Property(
- *                 property="message",
- *                 type="string",
- *                 example="Se restauró correctamente los contactos."
- *             ),
- *             @OA\Property(
- *                 property="data",
- *                 type="array",
- *                 @OA\Items(ref="#/components/schemas/ContactResource")
- *             )
- *         )
- *     ),
- *     @OA\Response(
- *         response=404,
- *         description="No contacts to restore",
- *         @OA\JsonContent(
- *             type="object",
- *             @OA\Property(
- *                 property="message",
- *                 type="string",
- *                 example="No hay contactos para restaurar"
- *             )
- *         )
- *     ),
- *     @OA\Response(
- *         response=500,
- *         description="Server error",
- *         @OA\JsonContent(
- *             type="object",
- *             @OA\Property(
- *                 property="message",
- *                 type="string",
- *                 example="Ha ocurrido un error: Internal Server Error"
- *             )
- *         )
- *     )
- * )
- */
+    /**
+     * Restore deleted contacts for the logged-in user.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @OA\Post(
+     *     path="/contact/restore",
+     *     summary="Restore deleted contacts",
+     *     security={ {"bearerAuth": {} } },
+     *     tags={"Contacts"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Se restauró correctamente los contactos."
+     *             ),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="No contacts to restore",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="No hay contactos para restaurar"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Server error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Ha ocurrido un error: Internal Server Error"
+     *             )
+     *         )
+     *     )
+     * )
+     */
     public function restoreContacts()
     {
         try {
             $contacts = $this->contactRepository->restoreContacts();
-            if($contacts==[]){
+            if ($contacts == []) {
                 throw new ModelNotFoundException();
             }
-            return ApiResponses::successs('Se restauró correctamente los contactos.', 200,$contacts);
+            return ApiResponses::successs('Se restauró correctamente los contactos.', 200, $contacts);
         } catch (ModelNotFoundException $e) {
             return ApiResponses::error('No hay contactos para restaurar', 404);
         } catch (Exception $e) {

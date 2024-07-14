@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\favorite;
 
+use App\Http\Resources\contact\ContactResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 
@@ -55,12 +56,7 @@ class FavoriteResource extends JsonResource
     {
         return [
             'id' => $this->encrypted_id,
-            'contact' => [
-                'id' => $this->contact->encrypted_id,
-                'name' => $this->contact->name,
-                'phone' => $this->contact->phone,
-                'nickname' => $this->contact->nickname,
-            ],
+            'contact' => new ContactResource($this->whenLoaded('contact')),
         ];
     }
 }

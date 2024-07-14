@@ -27,7 +27,7 @@ Route::prefix('v1')->group(function () {
 
 
 
-    Route::group(['middleware' => ["auth:api"]], function () {
+    Route::group(['middleware' => ["auth:api","throttle:api"]], function () {
         /**
          * ? Auth Routes
          */

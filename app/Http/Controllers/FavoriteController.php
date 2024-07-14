@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\favorite\FavoriteRegisterRequest;
 use App\Http\Resources\favorite\FavoriteResource;
+use App\Http\Resources\paginate\PaginateResource;
 use App\Http\Responses\ApiResponses;
 use App\Repository\Favorite\FavoriteRepository;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 
@@ -28,39 +29,79 @@ class FavoriteController extends Controller
     {
         $this->favoritesRepository = $favoritesRepository;
     }
-
     /**
-     * Display a listing of the resource.
-     *
-     * @return JsonResponse
-     *
-     * @throws Exception
-     *
      * @OA\Get(
      *     path="/favorite",
-     *     summary="Get all favorite contacts",
+     *     summary="Obtiene la lista de favoritos del usuario autenticado",
      *     tags={"Favorites"},
-     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="name",
+     *         in="query",
+     *         description="Filtro por nombre del contacto",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="phone",
+     *         in="query",
+     *         description="Filtro por número de teléfono del contacto",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="nickname",
+     *         in="query",
+     *         description="Filtro por apodo del contacto",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="List of favorite contacts",
+     *         description="Lista de favoritos obtenida exitosamente",
      *         @OA\JsonContent(
-     *             type="array",
-     *             @OA\Items(ref="#/components/schemas/FavoriteResource")
-     *         ),
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/FavoriteResource")
+     *             ),
+     *             @OA\Property(
+     *                 property="meta",
+     *                 ref="#/components/schemas/PaginationMeta"
+     *             ),
+     *             @OA\Property(
+     *                 property="links",
+     *                 ref="#/components/schemas/PaginationLinks"
+     *             )
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Server error",
-     *     ),
+     *         description="Error al obtener la lista de favoritos",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Ha ocurrido un error: [detalles del error]"
+     *             )
+     *         )
+     *     )
      * )
      */
-    public function index()
+    public function index(Request $request)
     {
 
         try {
-            $favorites = $this->favoritesRepository->index();
-            return ApiResponses::successs('Lista de favoritos de un usuario.', 200, FavoriteResource::collection($favorites));
+            $filters = $request->only(['name', 'phone', 'nickname']);
+            $favorites = $this->favoritesRepository->index($filters);
+            return ApiResponses::successs('Lista de favoritos de un usuario.', 200, new PaginateResource($favorites));
         } catch (Exception $e) {
             return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
         }
@@ -70,14 +111,7 @@ class FavoriteController extends Controller
      * Store a newly created resource in storage.
      */
 
-      /**
-     * Store a newly created resource in storage.
-     *
-     * @param FavoriteRegisterRequest $request
-     * @return JsonResponse
-     *
-     * @throws Exception
-     *
+    /**
      * @OA\Post(
      *     path="/favorite",
      *     summary="Store a new favorite contact",
@@ -90,23 +124,39 @@ class FavoriteController extends Controller
      *     @OA\Response(
      *         response=201,
      *         description="Favorite contact successfully stored",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Se ha creado añadido exitosamente el contacto a favoritos")
+     *         )
      *     ),
      *     @OA\Response(
-     *         response=400,
+     *         response=422,
      *         description="Validation error",
-     *     ),
-     *     @OA\Response(
-     *         response=403,
-     *         description="Unauthorized to add this contact to favorites",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Error de validación"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=404,
      *         description="Resource not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="El recurso solicitado no existe")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Unauthorized to add this contact to favorites",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="No estás autorizado para añadir este contacto a favoritos")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,
      *         description="Server error",
-     *     ),
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Ha ocurrido un error: [detalles del error]")
+     *         )
+     *     )
      * )
      */
     public function store(FavoriteRegisterRequest $request)
@@ -129,49 +179,46 @@ class FavoriteController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
 
-     /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return JsonResponse
-     *
-     * @throws Exception
-     *
+    /**
      * @OA\Get(
      *     path="/favorite/{id}",
-     *     summary="Get a specific favorite contact",
+     *     summary="Show a favorite contact",
      *     tags={"Favorites"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
-     *         description="ID of the favorite contact",
-     *         @OA\Schema(
-     *             type="integer"
-     *         )
+     *         @OA\Schema(type="integer"),
+     *         description="ID of the favorite contact"
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Favorite contact details",
-     *         @OA\JsonContent(ref="#/components/schemas/FavoriteResource"),
-     *     ),
-     *     @OA\Response(
-     *         response=403,
-     *         description="Unauthorized to view this favorite contact",
+     *         description="Favorite contact found",
+     *         @OA\JsonContent(ref="#/components/schemas/FavoriteResource")
      *     ),
      *     @OA\Response(
      *         response=404,
      *         description="Favorite contact not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="No se ha encontrado el contacto favorito")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Unauthorized to view this favorite contact",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="No estás autorizado para ver este contacto favorito")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,
      *         description="Server error",
-     *     ),
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Ha ocurrido un error: [detalles del error]")
+     *         )
+     *     )
      * )
      */
     public function show($id)
@@ -190,22 +237,9 @@ class FavoriteController extends Controller
             return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
         }
     }
-
-
     /**
-     * Remove the specified resource from storage.
-     */
-
-      /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return JsonResponse
-     *
-     * @throws Exception
-     *
      * @OA\Delete(
-     *     path="/favorite/{id}",
+     *     path="/api/favorite/{id}",
      *     summary="Delete a favorite contact",
      *     tags={"Favorites"},
      *     security={{"bearerAuth": {}}},
@@ -213,27 +247,37 @@ class FavoriteController extends Controller
      *         name="id",
      *         in="path",
      *         required=true,
-     *         description="ID of the favorite contact",
-     *         @OA\Schema(
-     *             type="integer"
-     *         )
+     *         @OA\Schema(type="integer"),
+     *         description="ID of the favorite contact to delete"
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Favorite contact successfully deleted",
-     *     ),
-     *     @OA\Response(
-     *         response=403,
-     *         description="Unauthorized to delete this favorite contact",
+     *         description="Favorite contact deleted successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Contacto favorito Eliminado")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=404,
      *         description="Favorite contact not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="No se ha encontrado el contacto favorito")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Unauthorized to delete this favorite contact",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="No estás autorizado para elimiinar este contacto favorito")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,
      *         description="Server error",
-     *     ),
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Ha ocurrido un error: [detalles del error]")
+     *         )
+     *     )
      * )
      */
     public function destroy($id)

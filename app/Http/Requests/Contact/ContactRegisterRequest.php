@@ -9,6 +9,16 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\Rule;
 
+/**
+ * @OA\Schema(
+ *     schema="ContactRegisterRequest",
+ *     title="Contact Register Request",
+ *     required={"name", "phone"},
+ *     @OA\Property(property="name", type="string", example="John Doe"),
+ *     @OA\Property(property="phone", type="string", example="1234567890"),
+ *     @OA\Property(property="nickname", type="string", example="Johnny"),
+ * )
+ */
 class ContactRegisterRequest extends FormRequest
 {
     /**

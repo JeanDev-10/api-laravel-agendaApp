@@ -8,35 +8,43 @@ use Illuminate\Http\Resources\Json\JsonResource;
 /**
  * @OA\Schema(
  *     schema="ContactResource",
+ *     type="object",
  *     title="Contact Resource",
- *     description="Contact resource representation",
- *     @OA\Property(
- *         property="id",
- *         type="integer",
- *         description="Id of the contact (encrypted)",
- *         example="1"
- *     ),
- *     @OA\Property(
- *         property="name",
- *         type="string",
- *         description="Name of the contact",
- *         example="John Doe"
- *     ),
- *     @OA\Property(
- *         property="phone",
- *         type="string",
- *         description="Phone number of the contact",
- *         example="123456789"
- *     ),
- *     @OA\Property(
- *         property="nickname",
- *         type="string",
- *         description="Nickname of the contact",
- *         example="Johnny"
- *     )
+ *     properties={
+ *         @OA\Property(
+ *             property="id",
+ *             type="string",
+ *             example="encrypted_id"
+ *         ),
+ *         @OA\Property(
+ *             property="name",
+ *             type="string",
+ *             example="John Doe"
+ *         ),
+ *         @OA\Property(
+ *             property="phone",
+ *             type="string",
+ *             example="1234567890"
+ *         ),
+ *         @OA\Property(
+ *             property="nickname",
+ *             type="string",
+ *             example="Johnny"
+ *         ),
+ *         @OA\Property(
+ *             property="favoritos",
+ *             type="array",
+ *             @OA\Items(
+ *                 @OA\Property(
+ *                     property="id",
+ *                     type="integer",
+ *                     example=1
+ *                 )
+ *             )
+ *         )
+ *     }
  * )
  */
-
 
 
 
