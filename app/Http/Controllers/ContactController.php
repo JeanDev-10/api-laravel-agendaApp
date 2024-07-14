@@ -13,6 +13,7 @@ use App\Http\Resources\contact\ContactOneResource;
 use App\Http\Resources\paginate\PaginateResource;
 use App\Repository\Contact\ContactRepository;
 use Exception;
+use Illuminate\Http\Request;
 
 class ContactController extends Controller
 {
@@ -24,10 +25,13 @@ class ContactController extends Controller
     }
 
 
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $contacts = $this->contactRepository->index();
+            $filters = $request->only(['name', 'phone', 'nickname']);
+            $orderBy = $request->query('orderBy', 'id');
+            $order = $request->query('order', 'asc');
+            $contacts = $this->contactRepository->index($filters, $orderBy, $order);
             return ApiResponses::successs('Lista de contactos de un usuario.', 200, new PaginateResource($contacts));
         } catch (Exception $e) {
             return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);

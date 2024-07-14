@@ -11,6 +11,7 @@ use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 
@@ -30,12 +31,13 @@ class FavoriteController extends Controller
         $this->favoritesRepository = $favoritesRepository;
     }
 
-    public function index()
+    public function index(Request $request)
     {
 
         try {
-            $favorites = $this->favoritesRepository->index();
-             return ApiResponses::successs('Lista de favoritos de un usuario.', 200, new PaginateResource($favorites));
+            $filters = $request->only(['name', 'phone', 'nickname']);
+            $favorites = $this->favoritesRepository->index($filters);
+            return ApiResponses::successs('Lista de favoritos de un usuario.', 200, new PaginateResource($favorites));
         } catch (Exception $e) {
             return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
         }
@@ -45,7 +47,7 @@ class FavoriteController extends Controller
      * Store a newly created resource in storage.
      */
 
-      /**
+    /**
      * Store a newly created resource in storage.
      *
      * @param FavoriteRegisterRequest $request
@@ -108,7 +110,7 @@ class FavoriteController extends Controller
      * Display the specified resource.
      */
 
-     /**
+    /**
      * Display the specified resource.
      *
      * @param int $id
@@ -171,7 +173,7 @@ class FavoriteController extends Controller
      * Remove the specified resource from storage.
      */
 
-      /**
+    /**
      * Remove the specified resource from storage.
      *
      * @param int $id
