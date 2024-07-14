@@ -13,11 +13,10 @@ use Illuminate\Validation\ValidationException;
 
 /**
  * @OA\Schema(
- *     title="FavoriteRegisterRequest",
- *     description="Request schema for registering a favorite contact",
- *     required={
- *         "contact_id"
- *     },
+ *     schema="FavoriteRegisterRequest",
+ *     title="Favorite Register Request",
+ *     required={"contact_id"},
+ *     @OA\Property(property="contact_id", type="string", example="encrypted_contact_id_here"),
  * )
  */
 

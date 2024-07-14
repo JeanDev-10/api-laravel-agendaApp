@@ -357,26 +357,12 @@
                 "description": "Stores a newly created contact in the database.",
                 "operationId": "a9d703d146937636b69eb7e9825da5de",
                 "requestBody": {
+                    "description": "Datos del contacto a registrar",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [
-                                    "name",
-                                    "phone"
-                                ],
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "example": "John"
-                                    },
-                                    "phone": {
-                                        "type": "string",
-                                        "example": "0993854921",
-                                        "nullable": true
-                                    }
-                                },
-                                "type": "object"
+                                "$ref": "#/components/schemas/ContactRegisterRequest"
                             }
                         }
                     }
@@ -564,51 +550,17 @@
                     }
                 ],
                 "requestBody": {
+                    "description": "Datos del contacto a actualizar",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [
-                                    "name",
-                                    "phone"
-                                ],
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "example": "John"
-                                    },
-                                    "phone": {
-                                        "type": "string",
-                                        "example": "0993854921"
-                                    },
-                                    "nickname": {
-                                        "type": "string",
-                                        "example": "Jhon123",
-                                        "nullable": true
-                                    }
-                                },
-                                "type": "object"
+                                "$ref": "#/components/schemas/ContactUpdateRegisterRequest"
                             }
                         }
                     }
                 },
                 "responses": {
-                    "202": {
-                        "description": "Contact updated successsfully.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Contacto actualizado exitosamente."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
                     "404": {
                         "description": "Contact not found.",
                         "content": {
@@ -837,37 +789,6 @@
             }
         },
         "/favorite": {
-            "get": {
-                "tags": [
-                    "Favorites"
-                ],
-                "summary": "Get all favorite contacts",
-                "description": "Display a listing of the resource.",
-                "operationId": "40cccb9d38c80baf7f3ba8dc2b5bb2aa",
-                "responses": {
-                    "200": {
-                        "description": "List of favorite contacts",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/FavoriteResource"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
             "post": {
                 "tags": [
                     "Favorites"
@@ -1003,34 +924,12 @@
                 "description": "Endpoint to change user password.",
                 "operationId": "changePassword",
                 "requestBody": {
-                    "description": "Password change data",
+                    "description": "Datos requeridos para cambiar la contraseña",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [
-                                    "password",
-                                    "new_password",
-                                    "new_password_confirmation"
-                                ],
-                                "properties": {
-                                    "password": {
-                                        "type": "string",
-                                        "format": "password",
-                                        "example": "old_password"
-                                    },
-                                    "new_password": {
-                                        "type": "string",
-                                        "format": "password",
-                                        "example": "new_password"
-                                    },
-                                    "new_password_confirmation": {
-                                        "type": "string",
-                                        "format": "password",
-                                        "example": "new_password"
-                                    }
-                                },
-                                "type": "object"
+                                "$ref": "#/components/schemas/UserChangePasswordRequest"
                             }
                         }
                     }
@@ -1141,22 +1040,12 @@
                 "description": "Endpoint to verify if the provided password is correct",
                 "operationId": "checkThePassword",
                 "requestBody": {
+                    "description": "Contraseña a verificar",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [
-                                    "password"
-                                ],
-                                "properties": {
-                                    "password": {
-                                        "type": "string",
-                                        "maxLength": 10,
-                                        "minLength": 3,
-                                        "example": "yourpassword"
-                                    }
-                                },
-                                "type": "object"
+                                "$ref": "#/components/schemas/CheckThePasswordRequest"
                             }
                         }
                     }
@@ -1293,26 +1182,12 @@
                 "description": "Endpoint to edit user profile information.",
                 "operationId": "editProfile",
                 "requestBody": {
-                    "description": "Profile update data",
+                    "description": "Datos requeridos para editar el perfil de usuario",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [
-                                    "firstName",
-                                    "lastName"
-                                ],
-                                "properties": {
-                                    "firstName": {
-                                        "type": "string",
-                                        "example": "John"
-                                    },
-                                    "lastName": {
-                                        "type": "string",
-                                        "example": "Doe"
-                                    }
-                                },
-                                "type": "object"
+                                "$ref": "#/components/schemas/UserEditProfileRequest"
                             }
                         }
                     }
@@ -1472,12 +1347,116 @@
                 },
                 "type": "object"
             },
+            "ContactRegisterRequest": {
+                "title": "Contact Register Request",
+                "required": [
+                    "name",
+                    "phone"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "1234567890"
+                    },
+                    "nickname": {
+                        "type": "string",
+                        "example": "Johnny"
+                    }
+                },
+                "type": "object"
+            },
+            "ContactUpdateRegisterRequest": {
+                "title": "Contact Update Register Request",
+                "required": [
+                    "name",
+                    "phone"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "1234567890"
+                    },
+                    "nickname": {
+                        "type": "string",
+                        "example": "Johnny"
+                    }
+                },
+                "type": "object"
+            },
+            "CheckThePasswordRequest": {
+                "title": "Check The Password Request",
+                "required": [
+                    "password"
+                ],
+                "properties": {
+                    "password": {
+                        "type": "string",
+                        "example": "password123"
+                    }
+                },
+                "type": "object"
+            },
+            "UserChangePasswordRequest": {
+                "title": "User Change Password Request",
+                "required": [
+                    "password",
+                    "new_password",
+                    "new_password_confirmation"
+                ],
+                "properties": {
+                    "password": {
+                        "type": "string",
+                        "example": "current_password"
+                    },
+                    "new_password": {
+                        "type": "string",
+                        "example": "new_password"
+                    },
+                    "new_password_confirmation": {
+                        "type": "string",
+                        "example": "new_password"
+                    }
+                },
+                "type": "object"
+            },
+            "UserEditProfileRequest": {
+                "title": "User Edit Profile Request",
+                "required": [
+                    "firstName",
+                    "lastName"
+                ],
+                "properties": {
+                    "firstName": {
+                        "type": "string",
+                        "example": "John"
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "example": "Doe"
+                    }
+                },
+                "type": "object"
+            },
             "FavoriteRegisterRequest": {
-                "title": "FavoriteRegisterRequest",
-                "description": "Request schema for registering a favorite contact",
+                "title": "Favorite Register Request",
                 "required": [
                     "contact_id"
-                ]
+                ],
+                "properties": {
+                    "contact_id": {
+                        "type": "string",
+                        "example": "encrypted_contact_id_here"
+                    }
+                },
+                "type": "object"
             },
             "ContactOneResource": {
                 "title": "ContactOne Resource",

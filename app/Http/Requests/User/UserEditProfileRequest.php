@@ -7,7 +7,15 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Contracts\Validation\Validator;
-
+/**
+ * @OA\Schema(
+ *     schema="UserEditProfileRequest",
+ *     title="User Edit Profile Request",
+ *     required={"firstName", "lastName"},
+ *     @OA\Property(property="firstName", type="string", example="John"),
+ *     @OA\Property(property="lastName", type="string", example="Doe"),
+ * )
+ */
 class UserEditProfileRequest extends FormRequest
 {
     /**

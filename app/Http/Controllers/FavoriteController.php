@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\favorite\FavoriteRegisterRequest;
 use App\Http\Resources\favorite\FavoriteResource;
+use App\Http\Resources\paginate\PaginateResource;
 use App\Http\Responses\ApiResponses;
 use App\Repository\Favorite\FavoriteRepository;
 use Exception;
@@ -29,38 +30,12 @@ class FavoriteController extends Controller
         $this->favoritesRepository = $favoritesRepository;
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return JsonResponse
-     *
-     * @throws Exception
-     *
-     * @OA\Get(
-     *     path="/favorite",
-     *     summary="Get all favorite contacts",
-     *     tags={"Favorites"},
-     *     security={{"bearerAuth": {}}},
-     *     @OA\Response(
-     *         response=200,
-     *         description="List of favorite contacts",
-     *         @OA\JsonContent(
-     *             type="array",
-     *             @OA\Items(ref="#/components/schemas/FavoriteResource")
-     *         ),
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Server error",
-     *     ),
-     * )
-     */
     public function index()
     {
 
         try {
             $favorites = $this->favoritesRepository->index();
-            return ApiResponses::successs('Lista de favoritos de un usuario.', 200, FavoriteResource::collection($favorites));
+             return ApiResponses::successs('Lista de favoritos de un usuario.', 200, new PaginateResource($favorites));
         } catch (Exception $e) {
             return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
         }

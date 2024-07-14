@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\contact\ContactResource;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
@@ -43,12 +42,9 @@ class ContactController extends Controller
      *     tags={"Contacts"},
      *     security={ {"bearerAuth": {} } },
      *     @OA\RequestBody(
-     *     required=true,
-     *     @OA\JsonContent(
-     *             required={"name", "phone"},
-     *             @OA\Property(property="name", type="string", example="John"),
-     *             @OA\Property(property="phone", nullable=true ,type="string", example="0993854921"),
-     *         ),
+     *         required=true,
+     *         description="Datos del contacto a registrar",
+     *         @OA\JsonContent(ref="#/components/schemas/ContactRegisterRequest"),
      *     ),
      *     @OA\Response(
      *         response=201,
@@ -168,19 +164,8 @@ class ContactController extends Controller
      *     ),
      *     @OA\RequestBody(
      *         required=true,
-     *     @OA\JsonContent(
-     *             required={"name", "phone"},
-     *             @OA\Property(property="name", type="string", example="John"),
-     *             @OA\Property(property="phone" ,type="string", example="0993854921"),
-     *             @OA\Property(property="nickname" ,type="string", nullable=true ,example="Jhon123"),
-     *         ),
-     *     ),
-     *     @OA\Response(
-     *         response=202,
-     *         description="Contact updated successsfully.",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Contacto actualizado exitosamente.")
-     *         )
+     *         description="Datos del contacto a actualizar",
+     *         @OA\JsonContent(ref="#/components/schemas/ContactUpdateRegisterRequest"),
      *     ),
      *     @OA\Response(
      *         response=404,

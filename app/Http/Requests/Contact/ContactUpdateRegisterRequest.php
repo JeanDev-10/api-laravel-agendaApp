@@ -12,7 +12,16 @@ use Illuminate\Support\Facades\Crypt;
 
 
 
-
+/**
+ * @OA\Schema(
+ *     schema="ContactUpdateRegisterRequest",
+ *     title="Contact Update Register Request",
+ *     required={"name", "phone"},
+ *     @OA\Property(property="name", type="string", example="John Doe"),
+ *     @OA\Property(property="phone", type="string", example="1234567890"),
+ *     @OA\Property(property="nickname", type="string", example="Johnny"),
+ * )
+ */
 class ContactUpdateRegisterRequest extends FormRequest
 {
     /**

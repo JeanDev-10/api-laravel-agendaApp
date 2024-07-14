@@ -10,7 +10,7 @@ class FavoriteRepository implements FavoriteInterfaceRepository
 {
     public function index(){
         $user_id=auth()->user()->id;
-        $favorites=Favorite::with('Contact')->where('user_id',$user_id)->get();
+        $favorites=Favorite::with('Contact')->where('user_id',$user_id)->paginate(10);
         foreach ($favorites as $favorite) {
             $favorite->encrypted_id = Crypt::encrypt($favorite->id);
             $favorite->contact->encrypted_id = Crypt::encrypt($favorite->contact->id);
