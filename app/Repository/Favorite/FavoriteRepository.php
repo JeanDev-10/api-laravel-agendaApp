@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Crypt;
 
 class FavoriteRepository implements FavoriteInterfaceRepository
 {
-    public function index(array $filters = [], $perPage = 10)
+    public function index(array $filters = [])
     {
         $user_id = auth()->user()->id;
 
@@ -37,7 +37,7 @@ class FavoriteRepository implements FavoriteInterfaceRepository
 
         // Ordenar por campos de la tabla relacionada solo si es necesario
 
-        $favorites = $query->paginate($perPage);
+        $favorites = $query->paginate(10);
 
         // Modificar cada favorito para agregar encrypted_id
         $favorites->getCollection()->transform(function ($favorite) {

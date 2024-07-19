@@ -29,6 +29,7 @@ class ContactController extends Controller
      *     path="/contact",
      *     summary="Obtiene la lista de contactos del usuario autenticado",
      *     tags={"Contacts"},
+     *     security={ {"bearerAuth": {} } },
      *     @OA\Parameter(
      *         name="name",
      *         in="query",

@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 use App\Models\Favorite;
 
 interface FavoriteInterfaceRepository{
-    public function index();
+    public function index(array $filters);
     public function store(Request $request);
     public function show($id);
     public function showById($id);
