@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 class ContactRepository implements ContactInterface
 {
 
-    public function index(array $filters = [], $orderBy = 'id', $order = 'asc', $perPage = 10)
+    public function index(array $filters = [], $orderBy = 'id', $order = 'asc')
     {
         $user = auth()->user();
 
@@ -30,7 +30,7 @@ class ContactRepository implements ContactInterface
         $query->orderBy($orderBy, $order);
 
         // Aplicamos la paginación
-        $contacts = $query->paginate($perPage);
+        $contacts = $query->paginate(10);
 
         // Modificamos cada contacto para agregar encrypted_id
         $contacts->getCollection()->transform(function ($contact) {

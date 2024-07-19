@@ -34,6 +34,7 @@ class FavoriteController extends Controller
      *     path="/favorite",
      *     summary="Obtiene la lista de favoritos del usuario autenticado",
      *     tags={"Favorites"},
+     *     security={ {"bearerAuth": {} } },
      *     @OA\Parameter(
      *         name="name",
      *         in="query",

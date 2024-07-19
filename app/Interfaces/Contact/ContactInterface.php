@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 use App\Models\Contact;
 
 interface ContactInterface{
-    public function index();
+    public function index(array $filters, $orderBy , $order);
     public function store(Request $request);
     public function show($id);
     public function update(Contact $contacto,Request $request);
