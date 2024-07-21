@@ -90,7 +90,7 @@ class ContactRepository implements ContactInterface
 
         foreach ($deletedContacts as $contact) {
             // Verificar si existe otro contacto activo con el mismo número
-            $existingContact = Contact::where('phone', $contact->phone)->where('user_id', '<>', $userId)->exists();
+            $existingContact = Contact::where('phone', $contact->phone)->where('user_id', $userId)->exists();
 
             if ($existingContact) {
                 // Lógica para manejar la existencia de un contacto activo con el mismo número
