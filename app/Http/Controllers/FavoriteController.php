@@ -6,6 +6,7 @@ use App\Http\Requests\favorite\FavoriteRegisterRequest;
 use App\Http\Resources\favorite\FavoriteResource;
 use App\Http\Resources\paginate\PaginateResource;
 use App\Http\Responses\ApiResponses;
+use App\Repository\Contact\ContactRepository;
 use App\Repository\Favorite\FavoriteRepository;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -25,9 +26,11 @@ class FavoriteController extends Controller
      * Display a listing of the resource.
      */
     private FavoriteRepository $favoritesRepository;
-    public function __construct(FavoriteRepository $favoritesRepository)
+    private ContactRepository $contactRepository;
+    public function __construct(FavoriteRepository $favoritesRepository,ContactRepository $contactRepository)
     {
         $this->favoritesRepository = $favoritesRepository;
+        $this->contactRepository = $contactRepository;
     }
     /**
      * @OA\Get(
@@ -163,10 +166,11 @@ class FavoriteController extends Controller
     public function store(FavoriteRegisterRequest $request)
     {
         try {
+            $contact=$this->contactRepository->show($request->contact_id);
             if (Gate::denies('store', $request->contact_id)) {
                 throw new AuthorizationException();
             }
-            $this->favoritesRepository->store($request);
+            $this->favoritesRepository->store($contact->encrypted_id);
             return ApiResponses::successs('Se ha creado añadido exitosamente el contacto a favoritos', 201);
         } catch (ValidationException $e) {
             $errors = $e->validator->errors()->toArray();
