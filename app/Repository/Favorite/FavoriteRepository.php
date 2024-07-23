@@ -51,7 +51,7 @@ class FavoriteRepository implements FavoriteInterfaceRepository
 
     public function show($id)
     {
-        $favorite = Favorite::with('Contact')->where('id', Crypt::decrypt($id))->first();
+        $favorite = Favorite::with('Contact')->where('id', Crypt::decrypt($id))->firstOrFail();
         $favorite->encrypted_id = Crypt::encrypt($favorite->id);
         $favorite->contact->encrypted_id = Crypt::encrypt($favorite->contact->id);
         return $favorite;
