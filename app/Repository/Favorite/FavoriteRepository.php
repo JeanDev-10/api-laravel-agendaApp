@@ -60,12 +60,12 @@ class FavoriteRepository implements FavoriteInterfaceRepository
     {
         return Favorite::findOrFail(Crypt::decrypt($id));
     }
-    public function store(Request $request)
+    public function store($contact_id)
     {
         $user_id = auth()->user()->id;
         Favorite::create([
             "user_id" => $user_id,
-            "contact_id" => Crypt::decrypt($request->contact_id),
+            "contact_id" => Crypt::decrypt($contact_id),
         ]);
     }
     public function delete(Favorite $favorite)

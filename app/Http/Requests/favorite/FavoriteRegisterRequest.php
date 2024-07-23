@@ -49,10 +49,12 @@ class FavoriteRegisterRequest extends FormRequest
         $validator->after(function ($validator) {
             $userId = auth()->user()->id;
             $contactId = $this->input('contact_id');
-
-            if (Favorite::where('user_id', $userId)->where('contact_id',Crypt::decrypt($contactId))->exists()) {
-                $validator->errors()->add('contact_id', 'Este contacto ya está en tu lista de favoritos.');
+            if($contactId){
+                if (Favorite::where('user_id', $userId)->where('contact_id',Crypt::decrypt($contactId))->exists()) {
+                    $validator->errors()->add('contact_id', 'Este contacto ya está en tu lista de favoritos.');
+                }
             }
+
         });
     }
     protected function failedValidation(Validator $validator)
