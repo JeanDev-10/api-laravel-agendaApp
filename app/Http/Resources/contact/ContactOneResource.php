@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\contact;
 
+use App\Http\Resources\favorite\FavoriteResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -59,7 +60,7 @@ class ContactOneResource extends JsonResource
             'name' => $this->name,
             'phone' => $this->phone,
             'nickname' => $this->nickname,
-            'favoritos' => $this->whenLoaded('Favoritos', function () {
+            'favoritos' =>$this->whenLoaded('Favoritos', function () {
                 return $this->favoritos ? [
                     'id' => $this->favoritos->id,
                 ] : null;
