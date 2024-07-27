@@ -59,7 +59,7 @@ class ContactOneResource extends JsonResource
             'name' => $this->name,
             'phone' => $this->phone,
             'nickname' => $this->nickname,
-            'favoritos' => $this->whenLoaded('favoritos', function () {
+            'favoritos' => $this->whenLoaded('Favoritos', function () {
                 return $this->favoritos ? [
                     'id' => $this->favoritos->id,
                 ] : null;
