@@ -56,7 +56,7 @@ class FavoriteResource extends JsonResource
     {
         return [
             'id' => $this->encrypted_id,
-            'contact' => new ContactResource($this->whenLoaded('contact')),
+            'contact' => new ContactResource($this->whenLoaded('Contact')),
         ];
     }
 }
