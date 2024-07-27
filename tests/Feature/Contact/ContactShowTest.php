@@ -3,6 +3,7 @@
 namespace Tests\Feature\Contact;
 
 use App\Models\Contact;
+use App\Models\Favorite;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -67,6 +68,64 @@ class ContactShowTest extends TestCase
         $response->assertJson([
             "message" => "No estás autorizado para ver este contacto"
         ]);
+    }
+    public function test_user_can_get_a_contact_with_no_favorite(): void
+    {
+        $user = User::factory()->create();
+        $contact = Contact::factory([
+            "user_id" => $user->id
+        ])->create();
+        $this->assertDatabaseHas('contacts', $contact->toArray());
+        $token = JWTAuth::fromUser($user);
+        $encrypted_id = Crypt::encrypt($contact->id);
+        $response = $this->withHeaders([
+            "Authorization" => "Bearer $token"
+        ])->getJson('api/v1/contact/'.$encrypted_id);
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'message',
+            'statusCode',
+            'error',
+            'data'
+        ]);
+        $response->assertJson([
+            "message" => "Mostrando Contacto"
+        ]);
+        $response->assertJsonPath('data.phone', $contact->phone);
+        $response->assertJsonPath('data.name', $contact->name);
+        $response->assertJsonPath('data.favoritos', null);
+        $this->assertDatabaseHas('contacts', $contact->toArray());
+    }
+    public function test_user_can_get_a_contact_with_favorite(): void
+    {
+        $user = User::factory()->create();
+        $contact = Contact::factory([
+            "user_id" => $user->id
+        ])->create();
+        $favorite=Favorite::create([
+            "user_id" => $user->id,
+            "contact_id" => $contact->id
+        ]);
+        $this->assertDatabaseHas('contacts', $contact->toArray());
+        $token = JWTAuth::fromUser($user);
+        $encrypted_id = Crypt::encrypt($contact->id);
+        $response = $this->withHeaders([
+            "Authorization" => "Bearer $token"
+        ])->getJson('api/v1/contact/'.$encrypted_id);
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'message',
+            'statusCode',
+            'error',
+            'data'
+        ]);
+        $response->assertJson([
+            "message" => "Mostrando Contacto"
+        ]);
+        $response->assertJsonPath('data.phone', $contact->phone);
+        $response->assertJsonPath('data.name', $contact->name);
+        $response->assertJsonPath('data.favoritos.id', $favorite->id);
+        $this->assertDatabaseHas('contacts', $contact->toArray());
     }
 
 }
