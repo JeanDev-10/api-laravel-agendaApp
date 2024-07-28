@@ -30,7 +30,7 @@ class ContactRepository implements ContactInterface
         $query->orderBy($orderBy, $order);
 
         // Aplicamos la paginación
-        $contacts = $query->paginate(10);
+        $contacts = $query->paginate(10)->withQueryString();
 
         // Modificamos cada contacto para agregar encrypted_id
         $contacts->getCollection()->transform(function ($contact) {
