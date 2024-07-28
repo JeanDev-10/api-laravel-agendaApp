@@ -6,6 +6,7 @@ use App\Models\Contact;
 use App\Models\Favorite;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Crypt;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -53,6 +54,11 @@ class FavoriteIndexTest extends TestCase
             "message" => "Lista de favoritos de un usuario."
         ]);
         $response->assertJsonCount(5, 'data.data');
+        $responseData = $response->json('data');
+        $decryptedId_c1 = Crypt::decrypt($responseData['data'][0]['contact']['id']);
+        $decryptedId_c2 = Crypt::decrypt($responseData['data'][1]['contact']['id']);
+        $this->assertEquals($decryptedId_c1, $contacts[0]->id);
+        $this->assertEquals($decryptedId_c2, $contacts[1]->id);
         $response->assertJsonPath('data.data.0.contact.name', $contacts[0]->name);
         $response->assertJsonPath('data.data.1.contact.name', $contacts[1]->name);
         $this->assertDatabaseCount('contacts', 30);

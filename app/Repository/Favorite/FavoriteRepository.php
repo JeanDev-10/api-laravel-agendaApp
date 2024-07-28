@@ -37,7 +37,7 @@ class FavoriteRepository implements FavoriteInterfaceRepository
 
         // Ordenar por campos de la tabla relacionada solo si es necesario
 
-        $favorites = $query->paginate(10);
+        $favorites = $query->paginate(10)->withQueryString();
         // Modificar cada favorito para agregar encrypted_id
         $favorites->getCollection()->transform(function ($favorite) {
             $favorite->encrypted_id = Crypt::encrypt($favorite->id);

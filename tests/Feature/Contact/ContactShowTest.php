@@ -122,10 +122,13 @@ class ContactShowTest extends TestCase
         $response->assertJson([
             "message" => "Mostrando Contacto"
         ]);
+        $responseData=$response->json('data');
+        $decrypted_id=Crypt::decrypt($responseData['favoritos']['id']);
         $response->assertJsonPath('data.phone', $contact->phone);
         $response->assertJsonPath('data.name', $contact->name);
-        $response->assertJsonPath('data.favoritos.id', $favorite->id);
+        $this->assertEquals($decrypted_id,$favorite->id);
         $this->assertDatabaseHas('contacts', $contact->toArray());
     }
+
 
 }
