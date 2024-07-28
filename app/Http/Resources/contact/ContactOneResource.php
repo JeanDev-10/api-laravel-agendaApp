@@ -5,8 +5,7 @@ namespace App\Http\Resources\contact;
 use App\Http\Resources\favorite\FavoriteResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-
-
+use Illuminate\Support\Facades\Crypt;
 
 /**
  * @OA\Schema(
@@ -62,7 +61,7 @@ class ContactOneResource extends JsonResource
             'nickname' => $this->nickname,
             'favoritos' =>$this->whenLoaded('Favoritos', function () {
                 return $this->favoritos ? [
-                    'id' => $this->favoritos->id,
+                    'id' => Crypt::encrypt($this->favoritos->id),
                 ] : null;
             }),
         ];
