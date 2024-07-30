@@ -24,7 +24,7 @@ class ContactController extends Controller
         $this->contactRepository = $contactRepository;
     }
 
- /**
+    /**
      * @OA\Get(
      *     path="/contact",
      *     summary="Obtiene la lista de contactos del usuario autenticado",
@@ -293,8 +293,14 @@ class ContactController extends Controller
             $contact = $this->contactRepository->show($id);
             $this->authorize('update', $contact);
             unset($contact['encrypted_id']);
-            $this->contactRepository->update($contact, $request);
+            $isName = $contact->name == $request->name;
+            $isNickname = $contact->nickname == $request->nickname;
+            $isPhone = $contact->phone == $request->phone;
 
+            if ($isName && $isNickname && $isPhone) {
+                return ApiResponses::error("No has realizado ningún cambio en el contacto", 400);
+            }
+            $this->contactRepository->update($contact, $request);
             return ApiResponses::successs('Se actualizó correctamente el contacto', 202);
         } catch (ModelNotFoundException $e) {
             return ApiResponses::error('Contacto no encontrado', 404);
@@ -305,6 +311,7 @@ class ContactController extends Controller
             return ApiResponses::error("No puedes crear otro contacto con el mismo número", 422, ["message" => "Ya tienes un contacto con ese número."]);
         } catch (AuthorizationException $e) {
             return ApiResponses::error("No estás autorizado para actualizar este contacto", 403);
+        } catch (Exception $e) {
         } catch (Exception $e) {
             return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
         }
