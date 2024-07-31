@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthTest extends TestCase
 {
@@ -117,6 +118,34 @@ class AuthTest extends TestCase
         $response->assertJsonPath('data.lastname',["El campo lastname es obligatorio."]);
         $response->assertJsonPath('data.email',["El campo correo electrónico es obligatorio."]);
         $response->assertJsonPath('data.password',["El campo contraseña es obligatorio."]);
+
+    }
+    public function test_can_be_refresh_token(): void
+    {
+
+         $user = User::factory()->create();
+
+         $token = JWTAuth::fromUser($user);
+
+         $response = $this->withHeaders([
+             'Authorization' => 'Bearer ' . $token,
+         ])->postJson('/api/v1/auth/refresh');
+
+         // Verificar la respuesta
+         $response->assertStatus(200);
+         $response->assertJsonStructure([
+            'message',
+            'statusCode',
+            'error',
+            'data'
+        ]);
+         $response->assertJson([
+             'message' => 'Token refrescado exitosamente',
+         ]);
+
+         // Verificar que el token nuevo es diferente al anterior
+         $newToken = $response->json('token');
+         $this->assertNotEquals($token, $newToken);
 
     }
 }

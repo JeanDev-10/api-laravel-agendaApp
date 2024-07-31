@@ -34,7 +34,7 @@ class Authenticate extends Middleware
         } catch (JWTException $e) {
             return ApiResponses::error('No autenticado', 401);
         }
-        
+
         return $next($request);
     }
 }
