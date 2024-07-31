@@ -16,6 +16,7 @@ use App\Http\Controllers\ContactController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
 /**
  * ?Routes v1
  */
@@ -25,9 +26,12 @@ Route::prefix('v1')->group(function () {
         Route::post('/auth/login', 'login');
     });
 
+    Route::controller(AuthController::class)->group(function () {
+        Route::post('auth/refresh', 'refresh');
+    });
 
 
-    Route::group(['middleware' => ["auth:api","throttle:api"]], function () {
+    Route::group(['middleware' => ["auth:api", "throttle:api"]], function () {
         /**
          * ? Auth Routes
          */

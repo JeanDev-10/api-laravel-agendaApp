@@ -348,6 +348,74 @@
                 ]
             }
         },
+        "/auth/refresh": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Refresh JWT token",
+                "operationId": "f6c9683ed975ace7d035a09e6e2a9332",
+                "responses": {
+                    "200": {
+                        "description": "Token refrescado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Token refrescado exitosamente"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "new_jwt_token"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Token has expired",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Token has expired"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ha ocurrido un error:",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Ha ocurrido un error:"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/contact": {
             "get": {
                 "tags": [

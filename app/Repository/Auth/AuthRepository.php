@@ -37,4 +37,10 @@ class AuthRepository implements AuthInterface
     {
         auth()->logout();
     }
+    public function refresh()
+    {
+        $token = JWTAuth::getToken();
+        $newToken = JWTAuth::refresh($token);
+        return $newToken;
+    }
 }

@@ -10,7 +10,9 @@ use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 use App\Http\Responses\ApiResponses;
+use Illuminate\Http\Request;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 /**
  * @OA\Info(
@@ -96,52 +98,52 @@ class AuthController extends Controller
         }
     }
 
-   /**
- * @OA\Post(
- *     path="/auth/login",
- *     summary="Login a user",
- *     description="Endpoint to login a user",
- *     operationId="login",
- *     tags={"Auth"},
- *     @OA\RequestBody(
- *         required=true,
- *         @OA\JsonContent(
- *             required={"email", "password"},
- *             @OA\Property(property="email", type="string", format="email", example="john.doe@example.com"),
- *             @OA\Property(property="password", type="string", format="password", example="password123")
- *         ),
- *     ),
- *     @OA\Response(
- *         response=200,
- *         description="Login successful",
- *         @OA\JsonContent(
- *             @OA\Property(property="token", type="string", example="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")
- *         )
- *     ),
- *     @OA\Response(
- *         response=422,
- *         description="Validation error",
- *         @OA\JsonContent(
- *             @OA\Property(property="message", type="string", example="Error de validación"),
- *             @OA\Property(property="errors", type="object")
- *         )
- *     ),
- *     @OA\Response(
- *         response=404,
- *         description="User not found",
- *         @OA\JsonContent(
- *             @OA\Property(property="message", type="string", example="No existe ese registro")
- *         )
- *     ),
- *     @OA\Response(
- *         response=500,
- *         description="Internal server error",
- *         @OA\JsonContent(
- *             @OA\Property(property="message", type="string", example="Ha ocurrido un error: {error_message}")
- *         )
- *     )
- * )
- */
+    /**
+     * @OA\Post(
+     *     path="/auth/login",
+     *     summary="Login a user",
+     *     description="Endpoint to login a user",
+     *     operationId="login",
+     *     tags={"Auth"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email", "password"},
+     *             @OA\Property(property="email", type="string", format="email", example="john.doe@example.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="password123")
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Login successful",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="token", type="string", example="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Error de validación"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="No existe ese registro")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Ha ocurrido un error: {error_message}")
+     *         )
+     *     )
+     * )
+     */
     public function login(AuthLoginRequest $request)
     {
         try {
@@ -152,7 +154,7 @@ class AuthController extends Controller
         } catch (ModelNotFoundException) {
             return ApiResponses::error("No existe ese registro", 404);
         } catch (JWTException $e) {
-            return response()->json(['error' => 'No se pudo crear el token'], 500);
+            return ApiResponses::error('No se pudo crear el token' . $e->getMessage(), 500);
         } catch (Exception $e) {
             return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
         }
@@ -234,6 +236,45 @@ class AuthController extends Controller
         try {
             $this->authRepository->logout();
             return ApiResponses::successs("Cierre de sesión exitoso", 200);
+        } catch (Exception $e) {
+            return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
+        }
+    }
+    /**
+     * @OA\Post(
+     *     path="/auth/refresh",
+     *     summary="Refresh JWT token",
+     *     tags={"Auth"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Token refrescado exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Token refrescado exitosamente"),
+     *             @OA\Property(property="token", type="string", example="new_jwt_token")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Token has expired",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Token has expired")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Ha ocurrido un error:",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Ha ocurrido un error:")
+     *         )
+     *     ),
+     *     security={{"bearerAuth":{}}}
+     * )
+     */
+    public function refresh()
+    {
+        try {
+            $newToken = $this->authRepository->refresh();
+            return ApiResponses::successs("Token refrescado exitosamente", 200, $newToken);
         } catch (Exception $e) {
             return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
         }
