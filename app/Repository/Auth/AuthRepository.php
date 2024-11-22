@@ -1,43 +1,46 @@
 <?php
+
 namespace App\Repository\Auth;
+
 use App\Interfaces\Auth\AuthInterface;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Responses\ApiResponses;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
-class AuthRepository implements AuthInterface{
-    public function login(Request $request){
-        $user = User::where("email", "=", $request->email)->first();
+class AuthRepository implements AuthInterface
+{
+    public function login(Request $request)
+    {
 
-        if( isset($user->id) ){
-            if(Hash::check($request->password, $user->password)){
-                //creamos el token
-                $token = $user->createToken("auth_token")->plainTextToken;
-                return ApiResponses::successs("Usuario logeado exitosamente", 200, $token);
-            }else{
-                return ApiResponses::error("Credenciales incorrectas",404,["message"=>"Credenciales incorrectas"]);
-            }
-        }else{
-            return ApiResponses::error("Usuario no registrado",404,["message"=>"Usuario no registrado"]);
+        $credentials = $request->only('email', 'password');
+        if (!$token = JWTAuth::attempt($credentials)) {
+            return ApiResponses::error("Credenciales incorrectas", 401, ["message" => "Credenciales incorrectas"]);
         }
-
+        return ApiResponses::successs("Usuario logeado exitosamente", 200, $token);
     }
-    public function register(Request $request){
+    public function register(Request $request)
+    {
         User::create([
-            "firstname"=>$request->firstname,
-            "lastname"=>$request->lastname,
-            "email"=>$request->email,
-            "password"=>Hash::make($request->password),
+            "firstname" => $request->firstname,
+            "lastname" => $request->lastname,
+            "email" => $request->email,
+            "password" => Hash::make($request->password),
         ]);
     }
-    public function userProfile(){
-        $user = Auth::guard('sanctum')->user();
-        return $user;
+    public function userProfile()
+    {
+        return auth()->user();
     }
-    public function logout(){
-        $user = Auth::guard('sanctum')->user();
-        $user->tokens()->delete();
+    public function logout()
+    {
+        auth()->logout();
+    }
+    public function refresh()
+    {
+        $token = JWTAuth::getToken();
+        $newToken = JWTAuth::refresh($token);
+        return $newToken;
     }
 }

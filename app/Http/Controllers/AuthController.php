@@ -10,6 +10,9 @@ use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 use App\Http\Responses\ApiResponses;
+use Illuminate\Http\Request;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 /**
  * @OA\Info(
@@ -18,7 +21,7 @@ use App\Http\Responses\ApiResponses;
  *             description="Lista de Endspoints"
  * )
  *
- * @OA\Server(url="http://localhost:8000/api/")
+ * @OA\Server(url="http://localhost:8000/api/v1/")
  * @OA\SecurityScheme(
  *     type="http",
  *     description="Token de autenticación",
@@ -29,7 +32,6 @@ use App\Http\Responses\ApiResponses;
  *     securityScheme="bearerAuth",
  * )
  */
-
 
 class AuthController extends Controller
 {
@@ -113,7 +115,7 @@ class AuthController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Login successsful",
+     *         description="Login successful",
      *         @OA\JsonContent(
      *             @OA\Property(property="token", type="string", example="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")
      *         )
@@ -151,43 +153,44 @@ class AuthController extends Controller
             return ApiResponses::error("Error de validación", 422, $errors);
         } catch (ModelNotFoundException) {
             return ApiResponses::error("No existe ese registro", 404);
+        } catch (JWTException $e) {
+            return ApiResponses::error('No se pudo crear el token' . $e->getMessage(), 500);
         } catch (Exception $e) {
             return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
         }
-
     }
- /**
- * @OA\Get(
- *     path="/auth/profile",
- *     summary="Get user profile",
- *     description="Endpoint to get user profile information",
- *     operationId="userProfile",
- *     tags={"Auth"},
- *     security={ {"bearerAuth": {} } },
- *     @OA\Response(
- *         response=200,
- *         description="successsful operation",
- *         @OA\JsonContent(
- *             @OA\Property(property="message", type="string", example="Perfil de usuario"),
- *             @OA\Property(property="data", ref="#/components/schemas/UserResource")
- *         )
- *     ),
- *     @OA\Response(
- *         response=401,
- *         description="Unauthenticated",
- *         @OA\JsonContent(
- *             @OA\Property(property="message", type="string", example="Unauthenticated.")
- *         )
- *     ),
- *     @OA\Response(
- *         response=500,
- *         description="Internal server error",
- *         @OA\JsonContent(
- *             @OA\Property(property="message", type="string", example="Ha ocurrido un error: {error_message}")
- *         )
- *     )
- * )
- */
+    /**
+     * @OA\Get(
+     *     path="/auth/profile",
+     *     summary="Get user profile",
+     *     description="Endpoint to get user profile information",
+     *     operationId="userProfile",
+     *     tags={"Auth"},
+     *     security={ {"bearerAuth": {} } },
+     *     @OA\Response(
+     *         response=200,
+     *         description="successsful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Perfil de usuario"),
+     *             @OA\Property(property="data", ref="#/components/schemas/UserResource")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Ha ocurrido un error: {error_message}")
+     *         )
+     *     )
+     * )
+     */
     public function userProfile()
     {
         try {
@@ -196,9 +199,8 @@ class AuthController extends Controller
         } catch (Exception $e) {
             return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
         }
-
     }
-/**
+    /**
      * @OA\Post(
      *     path="/auth/logout",
      *     summary="Logout a user",
@@ -234,6 +236,45 @@ class AuthController extends Controller
         try {
             $this->authRepository->logout();
             return ApiResponses::successs("Cierre de sesión exitoso", 200);
+        } catch (Exception $e) {
+            return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
+        }
+    }
+    /**
+     * @OA\Post(
+     *     path="/auth/refresh",
+     *     summary="Refresh JWT token",
+     *     tags={"Auth"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Token refrescado exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Token refrescado exitosamente"),
+     *             @OA\Property(property="token", type="string", example="new_jwt_token")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Token has expired",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Token has expired")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Ha ocurrido un error:",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Ha ocurrido un error:")
+     *         )
+     *     ),
+     *     security={{"bearerAuth":{}}}
+     * )
+     */
+    public function refresh()
+    {
+        try {
+            $newToken = $this->authRepository->refresh();
+            return ApiResponses::successs("Token refrescado exitosamente", 200, $newToken);
         } catch (Exception $e) {
             return ApiResponses::error("Ha ocurrido un error: " . $e->getMessage(), 500);
         }

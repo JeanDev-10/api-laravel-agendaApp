@@ -7,7 +7,7 @@
     },
     "servers": [
         {
-            "url": "http://localhost:8000/api/"
+            "url": "http://localhost:8000/api/v1/"
         }
     ],
     "paths": {
@@ -146,7 +146,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Login successsful",
+                        "description": "Login successful",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -348,37 +348,43 @@
                 ]
             }
         },
-        "/contact": {
-            "get": {
+        "/auth/refresh": {
+            "post": {
                 "tags": [
-                    "Contacts"
+                    "Auth"
                 ],
-                "summary": "Get list of contacts",
-                "description": "Returns a list of contacts for a user.",
-                "operationId": "be5734b06f413963e908d91b37a45688",
+                "summary": "Refresh JWT token",
+                "operationId": "f6c9683ed975ace7d035a09e6e2a9332",
                 "responses": {
                     "200": {
-                        "description": "List of contacts.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/ContactResource"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated",
+                        "description": "Token refrescado exitosamente",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Unauthenticated."
+                                            "example": "Token refrescado exitosamente"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "new_jwt_token"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Token has expired",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Token has expired"
                                         }
                                     },
                                     "type": "object"
@@ -387,14 +393,119 @@
                         }
                     },
                     "500": {
-                        "description": "Internal server error",
+                        "description": "Ha ocurrido un error:",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Ha ocurrido un error:"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/contact": {
+            "get": {
+                "tags": [
+                    "Contacts"
+                ],
+                "summary": "Obtiene la lista de contactos del usuario autenticado",
+                "operationId": "be5734b06f413963e908d91b37a45688",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Filtro por nombre del contacto",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "phone",
+                        "in": "query",
+                        "description": "Filtro por número de teléfono del contacto",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "nickname",
+                        "in": "query",
+                        "description": "Filtro por apodo del contacto",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "orderBy",
+                        "in": "query",
+                        "description": "Campo por el cual se desea ordenar (id, name, phone, nickname)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "id"
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "Orden de la clasificación (asc, desc)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "asc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de contactos obtenida exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ContactResource"
+                                            }
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationMeta"
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/PaginationLinks"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error al obtener la lista de contactos",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Ha ocurrido un error: {error_message}"
+                                            "example": "Ha ocurrido un error: [detalles del error]"
                                         }
                                     },
                                     "type": "object"
@@ -417,26 +528,12 @@
                 "description": "Stores a newly created contact in the database.",
                 "operationId": "a9d703d146937636b69eb7e9825da5de",
                 "requestBody": {
+                    "description": "Datos del contacto a registrar",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [
-                                    "name",
-                                    "phone"
-                                ],
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "example": "John"
-                                    },
-                                    "phone": {
-                                        "type": "string",
-                                        "example": "0993854921",
-                                        "nullable": true
-                                    }
-                                },
-                                "type": "object"
+                                "$ref": "#/components/schemas/ContactRegisterRequest"
                             }
                         }
                     }
@@ -619,56 +716,22 @@
                         "description": "ID of the contact",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
                 "requestBody": {
+                    "description": "Datos del contacto a actualizar",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [
-                                    "name",
-                                    "phone"
-                                ],
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "example": "John"
-                                    },
-                                    "phone": {
-                                        "type": "string",
-                                        "example": "0993854921"
-                                    },
-                                    "nickname": {
-                                        "type": "string",
-                                        "example": "Jhon123",
-                                        "nullable": true
-                                    }
-                                },
-                                "type": "object"
+                                "$ref": "#/components/schemas/ContactUpdateRegisterRequest"
                             }
                         }
                     }
                 },
                 "responses": {
-                    "202": {
-                        "description": "Contact updated successsfully.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Contacto actualizado exitosamente."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
                     "404": {
                         "description": "Contact not found.",
                         "content": {
@@ -754,7 +817,7 @@
                         "description": "ID of the contact",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -831,6 +894,439 @@
                 ]
             }
         },
+        "/contact/restore": {
+            "post": {
+                "tags": [
+                    "Contacts"
+                ],
+                "summary": "Restore deleted contacts",
+                "description": "Restore deleted contacts for the logged-in user.",
+                "operationId": "eba13bc607f3738a290515197ef20af2",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Se restauró correctamente los contactos."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No contacts to restore",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No hay contactos para restaurar"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ha ocurrido un error: Internal Server Error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/favorite": {
+            "get": {
+                "tags": [
+                    "Favorites"
+                ],
+                "summary": "Obtiene la lista de favoritos del usuario autenticado",
+                "operationId": "40cccb9d38c80baf7f3ba8dc2b5bb2aa",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Filtro por nombre del contacto",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "phone",
+                        "in": "query",
+                        "description": "Filtro por número de teléfono del contacto",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "nickname",
+                        "in": "query",
+                        "description": "Filtro por apodo del contacto",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de favoritos obtenida exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/FavoriteResource"
+                                            }
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationMeta"
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/PaginationLinks"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error al obtener la lista de favoritos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ha ocurrido un error: [detalles del error]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Favorites"
+                ],
+                "summary": "Store a new favorite contact",
+                "operationId": "b61cce84e018fc68a7cab2f6b4e4f236",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FavoriteRegisterRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Favorite contact successfully stored",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Se ha creado añadido exitosamente el contacto a favoritos"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error de validación"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Resource not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "El recurso solicitado no existe"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized to add this contact to favorites",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No estás autorizado para añadir este contacto a favoritos"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ha ocurrido un error: [detalles del error]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/favorite/{id}": {
+            "get": {
+                "tags": [
+                    "Favorites"
+                ],
+                "summary": "Show a favorite contact",
+                "operationId": "416e3981c88ac49b4ad7dc14c1ee95cf",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the favorite contact",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Favorite contact found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FavoriteResource"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Favorite contact not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No se ha encontrado el contacto favorito"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized to view this favorite contact",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No estás autorizado para ver este contacto favorito"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ha ocurrido un error: [detalles del error]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/favorite/{id}": {
+            "delete": {
+                "tags": [
+                    "Favorites"
+                ],
+                "summary": "Delete a favorite contact",
+                "operationId": "1a83276ced9917dd0a6dca0470204c50",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the favorite contact to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Favorite contact deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Contacto favorito Eliminado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Favorite contact not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No se ha encontrado el contacto favorito"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized to delete this favorite contact",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No estás autorizado para elimiinar este contacto favorito"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ha ocurrido un error: [detalles del error]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/auth/changePassword": {
             "post": {
                 "tags": [
@@ -840,34 +1336,12 @@
                 "description": "Endpoint to change user password.",
                 "operationId": "changePassword",
                 "requestBody": {
-                    "description": "Password change data",
+                    "description": "Datos requeridos para cambiar la contraseña",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [
-                                    "password",
-                                    "new_password",
-                                    "new_password_confirmation"
-                                ],
-                                "properties": {
-                                    "password": {
-                                        "type": "string",
-                                        "format": "password",
-                                        "example": "old_password"
-                                    },
-                                    "new_password": {
-                                        "type": "string",
-                                        "format": "password",
-                                        "example": "new_password"
-                                    },
-                                    "new_password_confirmation": {
-                                        "type": "string",
-                                        "format": "password",
-                                        "example": "new_password"
-                                    }
-                                },
-                                "type": "object"
+                                "$ref": "#/components/schemas/UserChangePasswordRequest"
                             }
                         }
                     }
@@ -978,22 +1452,12 @@
                 "description": "Endpoint to verify if the provided password is correct",
                 "operationId": "checkThePassword",
                 "requestBody": {
+                    "description": "Contraseña a verificar",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [
-                                    "password"
-                                ],
-                                "properties": {
-                                    "password": {
-                                        "type": "string",
-                                        "maxLength": 10,
-                                        "minLength": 3,
-                                        "example": "yourpassword"
-                                    }
-                                },
-                                "type": "object"
+                                "$ref": "#/components/schemas/CheckThePasswordRequest"
                             }
                         }
                     }
@@ -1130,26 +1594,12 @@
                 "description": "Endpoint to edit user profile information.",
                 "operationId": "editProfile",
                 "requestBody": {
-                    "description": "Profile update data",
+                    "description": "Datos requeridos para editar el perfil de usuario",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [
-                                    "firstName",
-                                    "lastName"
-                                ],
-                                "properties": {
-                                    "firstName": {
-                                        "type": "string",
-                                        "example": "John"
-                                    },
-                                    "lastName": {
-                                        "type": "string",
-                                        "example": "Doe"
-                                    }
-                                },
-                                "type": "object"
+                                "$ref": "#/components/schemas/UserEditProfileRequest"
                             }
                         }
                     }
@@ -1311,59 +1761,123 @@
             },
             "ContactRegisterRequest": {
                 "title": "Contact Register Request",
-                "description": "Request body for creating a new contact",
                 "required": [
                     "name",
                     "phone"
                 ],
                 "properties": {
                     "name": {
-                        "description": "Contact name",
                         "type": "string",
                         "example": "John Doe"
                     },
                     "phone": {
-                        "description": "Contact phone number",
                         "type": "string",
-                        "example": "123456789"
+                        "example": "1234567890"
                     },
                     "nickname": {
-                        "description": "Nickame phone",
                         "type": "string",
-                        "example": "Jhon3"
+                        "example": "Johnny"
                     }
                 },
                 "type": "object"
             },
             "ContactUpdateRegisterRequest": {
-                "title": "Contact Update Request",
-                "description": "Request body for updating a contact",
+                "title": "Contact Update Register Request",
                 "required": [
                     "name",
                     "phone"
                 ],
                 "properties": {
                     "name": {
-                        "description": "Contact name",
                         "type": "string",
                         "example": "John Doe"
                     },
                     "phone": {
-                        "description": "Contact phone number",
                         "type": "string",
-                        "example": "123456789"
+                        "example": "1234567890"
+                    },
+                    "nickname": {
+                        "type": "string",
+                        "example": "Johnny"
                     }
                 },
                 "type": "object"
             },
-            "ContactResource": {
-                "title": "Contact Resource",
-                "description": "Contact resource representation",
+            "CheckThePasswordRequest": {
+                "title": "Check The Password Request",
+                "required": [
+                    "password"
+                ],
+                "properties": {
+                    "password": {
+                        "type": "string",
+                        "example": "password123"
+                    }
+                },
+                "type": "object"
+            },
+            "UserChangePasswordRequest": {
+                "title": "User Change Password Request",
+                "required": [
+                    "password",
+                    "new_password",
+                    "new_password_confirmation"
+                ],
+                "properties": {
+                    "password": {
+                        "type": "string",
+                        "example": "current_password"
+                    },
+                    "new_password": {
+                        "type": "string",
+                        "example": "new_password"
+                    },
+                    "new_password_confirmation": {
+                        "type": "string",
+                        "example": "new_password"
+                    }
+                },
+                "type": "object"
+            },
+            "UserEditProfileRequest": {
+                "title": "User Edit Profile Request",
+                "required": [
+                    "firstName",
+                    "lastName"
+                ],
+                "properties": {
+                    "firstName": {
+                        "type": "string",
+                        "example": "John"
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "example": "Doe"
+                    }
+                },
+                "type": "object"
+            },
+            "FavoriteRegisterRequest": {
+                "title": "Favorite Register Request",
+                "required": [
+                    "contact_id"
+                ],
+                "properties": {
+                    "contact_id": {
+                        "type": "string",
+                        "example": "encrypted_contact_id_here"
+                    }
+                },
+                "type": "object"
+            },
+            "ContactOneResource": {
+                "title": "ContactOne Resource",
+                "description": "ContactOne resource representation",
                 "properties": {
                     "id": {
-                        "description": "Id of the contact (encrypted)",
-                        "type": "integer",
-                        "example": "1"
+                        "description": "Encrypted ID of the contact",
+                        "type": "string",
+                        "example": "eyJpdiI6IjZkZ3BMRnl2Nlducmd4RWlCNDAxZkE9PSIsInZhbHVlIjoianpyOEorMWdwcmlRaWJPcUtlcFd0QT09IiwibWFjIjoiNTE2MTkxZDA0YTgyNTI1OTkwN2IxMjJlMmM1ZjNhZTQwYjNlYjIxOTBhNTI2NDcwMDM2YjkwYWY0YjVmNzYwOCIsInRhZyI6IiJ9"
                     },
                     "name": {
                         "description": "Name of the contact",
@@ -1379,6 +1893,123 @@
                         "description": "Nickname of the contact",
                         "type": "string",
                         "example": "Johnny"
+                    },
+                    "favoritos": {
+                        "description": "Favorite contact details",
+                        "properties": {
+                            "id": {
+                                "description": "ID of the favorite contact",
+                                "type": "integer",
+                                "example": 5
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "ContactResource": {
+                "title": "Contact Resource",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "encrypted_id"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "1234567890"
+                    },
+                    "nickname": {
+                        "type": "string",
+                        "example": "Johnny"
+                    },
+                    "favoritos": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 1
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "FavoriteResource": {
+                "title": "Favorite Resource",
+                "description": "Favorite resource representation",
+                "properties": {
+                    "id": {
+                        "description": "ID of the favorite (encrypted)",
+                        "type": "string",
+                        "example": "eyJpdiI6IjZkZ3BMRnl2Nlducmd4RWlCNDAxZkE9PSIsInZhbHVlIjoianpyOEorMWdwcmlRaWJPcUtlcFd0QT09IiwibWFjIjoiNTE2MTkxZDA0YTgyNTI1OTkwN2IxMjJlMmM1ZjNhZTQwYjNlYjIxOTBhNTI2NDcwMDM2YjkwYWY0YjVmNzYwOCIsInRhZyI6IiJ9"
+                    },
+                    "contact": {
+                        "title": "Contact details",
+                        "description": "Details of the contact that was favorited",
+                        "properties": {
+                            "id": {
+                                "description": "ID of the contact (encrypted)",
+                                "type": "string",
+                                "example": "eyJpdiI6Im53enBpS0xGZjF6VFUyaG1aQ2E3UFE9PSIsInZhbHVlIjoiaVJDdHZrZitLZ09HQ2YxMm84OUYvUT09IiwibWFjIjoiYmM2YzdlNjI1MjA4NjViOWJiYmIwMDBhN2U3ZjYyOGFmNzM3ZGY4YzJkZDI2ZjViYTY1NDkxNGIzY2I2YTM2YyIsInRhZyI6IiJ9"
+                            },
+                            "name": {
+                                "description": "Name of the contact",
+                                "type": "string",
+                                "example": "Juanito"
+                            },
+                            "phone": {
+                                "description": "Phone number of the contact",
+                                "type": "string",
+                                "example": "0993954831"
+                            },
+                            "nickname": {
+                                "description": "Nickname of the contact",
+                                "type": "string",
+                                "example": null
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "PaginationMeta": {
+                "properties": {
+                    "current_page": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "from": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "last_page": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "path": {
+                        "type": "string",
+                        "example": "http://localhost/api/contacts"
+                    },
+                    "per_page": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "to": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "total": {
+                        "type": "integer",
+                        "example": 100
                     }
                 },
                 "type": "object"
@@ -1410,6 +2041,29 @@
                     }
                 },
                 "type": "object"
+            },
+            "PaginationLinks": {
+                "properties": {
+                    "first": {
+                        "type": "string",
+                        "example": "http://localhost/api/contacts?page=1"
+                    },
+                    "last": {
+                        "type": "string",
+                        "example": "http://localhost/api/contacts?page=10"
+                    },
+                    "prev": {
+                        "type": "string",
+                        "example": null,
+                        "nullable": true
+                    },
+                    "next": {
+                        "type": "string",
+                        "example": "http://localhost/api/contacts?page=2",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
             }
         },
         "securitySchemes": {
@@ -1422,5 +2076,23 @@
                 "scheme": "bearer"
             }
         }
-    }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Auth"
+        },
+        {
+            "name": "Contacts",
+            "description": "Contacts"
+        },
+        {
+            "name": "Favorites",
+            "description": "Favorites"
+        },
+        {
+            "name": "User",
+            "description": "User"
+        }
+    ]
 }

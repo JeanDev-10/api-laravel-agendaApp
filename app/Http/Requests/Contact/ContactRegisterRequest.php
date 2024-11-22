@@ -8,33 +8,15 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\Rule;
-use Auth;
 
 /**
  * @OA\Schema(
  *     schema="ContactRegisterRequest",
- *     type="object",
  *     title="Contact Register Request",
- *     description="Request body for creating a new contact",
  *     required={"name", "phone"},
- *     @OA\Property(
- *         property="name",
- *         type="string",
- *         description="Contact name",
- *         example="John Doe"
- *     ),
- *     @OA\Property(
- *         property="phone",
- *         type="string",
- *         description="Contact phone number",
- *         example="123456789"
- *     ),
- *     @OA\Property(
- *         property="nickname",
- *         type="string",
- *         description="Nickame phone",
- *         example="Jhon3"
- *     )
+ *     @OA\Property(property="name", type="string", example="John Doe"),
+ *     @OA\Property(property="phone", type="string", example="1234567890"),
+ *     @OA\Property(property="nickname", type="string", example="Johnny"),
  * )
  */
 class ContactRegisterRequest extends FormRequest
@@ -61,8 +43,9 @@ class ContactRegisterRequest extends FormRequest
                 'string',
                 'min:10',
                 'max:10',
+                'regex:/^[0-9]+$/',
                 Rule::unique('contacts')->where(function ($query) {
-                    return $query->where('user_id', Auth::guard('sanctum')->user()->id)->whereNull('deleted_at');
+                    return $query->where('user_id', auth()->user()->id)->whereNull('deleted_at');
                 }),
             ],
             'nickname' => 'nullable|string|min:3|max:255'

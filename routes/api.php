@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContactController;
@@ -15,33 +16,55 @@ use App\Http\Controllers\ContactController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-Route::controller(AuthController::class)->group(function () {
-    Route::post('/auth/register', 'register');
-    Route::post('/auth/login', 'login');
-});
 
-
-
-Route::group(['middleware' => ["auth:sanctum"]], function () {
-    //auth metodos
+/**
+ * ?Routes v1
+ */
+Route::prefix('v1')->group(function () {
     Route::controller(AuthController::class)->group(function () {
-        Route::get('auth/profile', 'userProfile');
-        Route::post('auth/logout', 'logout');
+        Route::post('/auth/register', 'register');
+        Route::post('/auth/login', 'login');
     });
-    //metodos de usuario
-    Route::controller(UserController::class)->group(function () {
-        Route::post('auth/changePassword', 'changePassword');
-        Route::post('auth/check-password', 'checkThePassword');
-        Route::put('auth/editProfile', 'editProfile');
+
+    Route::controller(AuthController::class)->group(function () {
+        Route::post('auth/refresh', 'refresh');
     });
-    //metodos de contactos
-    Route::controller(ContactController::class)->group(function () {
-        Route::get('contact', 'index');
-        Route::post('contact', 'store');
-        Route::get('contact/{id}', 'show');
-        Route::put('contact/{id}', 'update');
-        Route::delete('contact/{id}', 'destroy');
+
+
+    Route::group(['middleware' => ["auth:api", "throttle:api"]], function () {
+        /**
+         * ? Auth Routes
+         */
+        Route::controller(AuthController::class)->group(function () {
+            Route::get('auth/profile', 'userProfile');
+            Route::post('auth/logout', 'logout');
+        });
+        /**
+         * ? Routes Users
+         */
+        Route::controller(UserController::class)->group(function () {
+            Route::post('auth/changePassword', 'changePassword');
+            Route::post('auth/check-password', 'checkThePassword');
+            Route::put('auth/editProfile', 'editProfile');
+        });
+        /**
+         * ? Routes Contacts
+         */
+
+        Route::controller(ContactController::class)->group(function () {
+            Route::get('contact', 'index');
+            Route::post('contact', 'store');
+            Route::get('contact/{id}', 'show');
+            Route::put('contact/{id}', 'update');
+            Route::post('contact/restore', 'restoreContacts');
+            Route::delete('contact/{id}', 'destroy');
+        });
+
+        /**
+         * ? Routes Favorites
+         */
+
+        Route::apiResource('favorite', FavoriteController::class)
+            ->only('index', 'store', 'destroy', 'show');
     });
 });
-
-//auth metodos

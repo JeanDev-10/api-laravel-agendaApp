@@ -7,7 +7,16 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Contracts\Validation\Validator;
-
+/**
+ * @OA\Schema(
+ *     schema="UserChangePasswordRequest",
+ *     title="User Change Password Request",
+ *     required={"password", "new_password", "new_password_confirmation"},
+ *     @OA\Property(property="password", type="string", example="current_password"),
+ *     @OA\Property(property="new_password", type="string", example="new_password"),
+ *     @OA\Property(property="new_password_confirmation", type="string", example="new_password"),
+ * )
+ */
 class UserChangePasswordRequest extends FormRequest
 {
     /**

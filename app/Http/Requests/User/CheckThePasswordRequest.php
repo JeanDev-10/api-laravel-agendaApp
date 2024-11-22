@@ -6,8 +6,14 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Contracts\Validation\Validator;
-
-class CheckThePasswordRequest extends FormRequest
+/**
+ * @OA\Schema(
+ *     schema="CheckThePasswordRequest",
+ *     title="Check The Password Request",
+ *     required={"password"},
+ *     @OA\Property(property="password", type="string", example="password123"),
+ * )
+ */class CheckThePasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

@@ -6,6 +6,10 @@ use Illuminate\Support\Facades\Auth;
 use Closure;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class Authenticate extends Middleware
 {
@@ -18,9 +22,19 @@ class Authenticate extends Middleware
     }
     public function handle($request, Closure $next,...$args)
     {
-        if (Auth::guard('sanctum')->check()) {
-            return $next($request);
+        try {
+            $user = JWTAuth::parseToken()->authenticate();
+            if (!$user) {
+                return ApiResponses::error('No autenticado', 401);
+            }
+        } catch (TokenExpiredException $e) {
+            return ApiResponses::error('Token expirado', 401);
+        } catch (TokenInvalidException $e) {
+            return ApiResponses::error('Token invalido', 401);
+        } catch (JWTException $e) {
+            return ApiResponses::error('No autenticado', 401);
         }
-        return ApiResponses::error("No autenticado",401);
+
+        return $next($request);
     }
 }
